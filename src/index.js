@@ -21,7 +21,8 @@ for (const scraper of scrapers) {
 
   const page = await browser.newPage();
 
-  for (const url of scraper.getCategoryUrls()) {
+  const categoryUrls = await scraper.getCategoryUrls(page);
+  for (const url of categoryUrls) {
     console.log(`  ${url}`);
     try {
       const products = await scraper.scrapeCategory(page, url);

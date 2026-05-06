@@ -1,7 +1,16 @@
 export class BaseScraper {
-  getName()       { throw new Error(`${this.constructor.name} must implement getName()`); }
-  getSlug()       { throw new Error(`${this.constructor.name} must implement getSlug()`); }
-  getCategoryUrls() { throw new Error(`${this.constructor.name} must implement getCategoryUrls()`); }
+  getName()  { throw new Error(`${this.constructor.name} must implement getName()`); }
+  getSlug()  { throw new Error(`${this.constructor.name} must implement getSlug()`); }
+
+  /**
+   * Return the list of category URLs to scrape.
+   * May be async for scrapers that discover categories dynamically.
+   * @param {import('playwright').Page} page
+   * @returns {Promise<string[]>|string[]}
+   */
+  getCategoryUrls(page) {
+    throw new Error(`${this.constructor.name} must implement getCategoryUrls()`);
+  }
 
   /**
    * Scrape all products from a single category page.

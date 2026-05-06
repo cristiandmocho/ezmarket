@@ -1,0 +1,19 @@
+{
+  "name": "ezmarkets",
+  "version": "0.1.0",
+  "description": "Supermarket product scraper and price comparison engine",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "db:init": "node src/db/init.js",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest"
+  },
+  "keywords": [],
+  "author": "Cristian Mocho",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "mysql2": "^3.22.3",
+    "playwright": "^1.59.1"
+  }
+}

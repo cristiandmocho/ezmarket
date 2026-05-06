@@ -77,4 +77,5 @@ CREATE TABLE product_price_history (
 INSERT INTO supermarkets (name, base_url, slug) VALUES
   ('Continente', 'https://www.continente.pt', 'continente'),
   ('Pingo Doce',  'https://www.pingodoce.pt',  'pingo-doce'),
-  ('Auchan',      'https://www.auchan.pt',      'auchan');
+  ('Auchan',      'https://www.auchan.pt',      'auchan'),
+  ('Lidl',        'https://www.lidl.pt',        'lidl');

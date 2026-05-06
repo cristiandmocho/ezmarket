@@ -1,7 +1,11 @@
 import pool from '../db/connection.js';
 
-// In-process cache: "supermarketId|parentId|name" → category id
+// In-process cache: "supermarketId|parentId|name" → { id, full_path }
 const cache = new Map();
+
+function toSlug(name) {
+  return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+}
 
 /**
  * Resolves a slash-separated category path to the leaf category's DB id,
@@ -13,11 +17,19 @@ const cache = new Map();
 export async function findOrCreateCategoryPath(supermarketId, categoryPath) {
   const parts = categoryPath.split('/').map(p => p.trim()).filter(Boolean);
 
-  let parentId = null;
-  for (const name of parts) {
-    const key = `${supermarketId}|${parentId}|${name}`;
+  let parentId   = null;
+  let parentPath = null;
+
+  for (let depth = 0; depth < parts.length; depth++) {
+    const name     = parts[depth];
+    const slug     = toSlug(name);
+    const fullPath = parentPath ? `${parentPath}/${name}` : name;
+    const key      = `${supermarketId}|${parentId}|${name}`;
+
     if (cache.has(key)) {
-      parentId = cache.get(key);
+      const cached = cache.get(key);
+      parentId   = cached.id;
+      parentPath = cached.full_path;
       continue;
     }
 
@@ -29,15 +41,21 @@ export async function findOrCreateCategoryPath(supermarketId, categoryPath) {
 
     if (rows.length > 0) {
       parentId = rows[0].id;
+      // Backfill slug/full_path/depth if not yet set
+      await pool.execute(
+        'UPDATE categories SET slug = ?, full_path = ?, depth = ? WHERE id = ? AND slug IS NULL',
+        [slug, fullPath, depth, parentId],
+      );
     } else {
       const [result] = await pool.execute(
-        'INSERT INTO categories (supermarket_id, name, parent_id) VALUES (?, ?, ?)',
-        [supermarketId, name, parentId],
+        'INSERT INTO categories (supermarket_id, name, slug, full_path, depth, parent_id) VALUES (?, ?, ?, ?, ?, ?)',
+        [supermarketId, name, slug, fullPath, depth, parentId],
       );
       parentId = result.insertId;
     }
 
-    cache.set(key, parentId);
+    cache.set(key, { id: parentId, full_path: fullPath });
+    parentPath = fullPath;
   }
 
   return parentId;

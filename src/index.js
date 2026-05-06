@@ -1,7 +1,7 @@
 import { chromium } from 'playwright';
 import { scrapers } from './scrapers/registry.js';
 import pool from './db/connection.js';
-import { upsertProduct } from './models/product.js';
+import { upsertOffer } from './models/offer.js';
 import { findOrCreateCategoryPath } from './models/category.js';
 
 const target = process.argv[2]?.toLowerCase();
@@ -45,7 +45,7 @@ for (const scraper of queue) {
           ? await findOrCreateCategoryPath(supermarketId, product.category)
           : null;
 
-        await upsertProduct({
+        await upsertOffer({
           supermarket_id: supermarketId,
           category_id:    categoryId,
           external_id:    product.external_id,

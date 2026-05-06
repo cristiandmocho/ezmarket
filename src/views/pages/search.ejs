@@ -1,0 +1,22 @@
+<section class="search-results">
+  <div class="search-results__inner">
+    <% if (q) { %>
+      <h1 class="search-results__title headline-md">
+        Resultados para <em>"<%= q %>"</em>
+        <span class="search-results__count label-sm"><%= results.length %> produto<%= results.length !== 1 ? 's' : '' %></span>
+      </h1>
+    <% } else { %>
+      <h1 class="search-results__title headline-md">Pesquise um produto</h1>
+    <% } %>
+
+    <% if (results.length > 0) { %>
+      <div class="product-grid">
+        <% results.forEach(offer => { %>
+          <%- include('../partials/product-card', { offer }) %>
+        <% }) %>
+      </div>
+    <% } else if (q) { %>
+      <p class="search-results__empty body-md">Nenhum resultado encontrado para "<%= q %>".</p>
+    <% } %>
+  </div>
+</section>

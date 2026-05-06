@@ -1,0 +1,17 @@
+@use '../base/variables' as *;
+
+.footer {
+  margin-top: auto;
+  border-top: 1px solid var(--outline-variant);
+  padding: $space-md $space-margin;
+
+  &__inner {
+    max-width: $content-max-width;
+    margin: 0 auto;
+  }
+
+  &__copy {
+    font-size: 13px;
+    color: var(--on-surface-variant);
+  }
+}

@@ -1,0 +1,78 @@
+@use '../base/variables' as *;
+
+.product-card {
+  background: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  border-radius: $radius;
+  overflow: hidden;
+  transition: box-shadow $transition-base, transform $transition-base;
+
+  &:hover {
+    box-shadow: $shadow-2;
+    transform: translateY(-2px);
+  }
+
+  &__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  &__image-wrap {
+    aspect-ratio: 1;
+    background: var(--surface-container-low);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $space-sm;
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: $radius-sm;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: $space-sm;
+    flex: 1;
+  }
+
+  &__brand {
+    color: var(--on-surface-variant);
+  }
+
+  &__name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  &__unit {
+    color: var(--on-surface-variant);
+    margin-top: auto;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-top: $space-xs;
+  }
+
+  &__price {
+    font-size: 20px;
+    color: var(--primary-container);
+  }
+
+  &__store {
+    color: var(--on-surface-variant);
+  }
+}

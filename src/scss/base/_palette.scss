@@ -1,0 +1,106 @@
+// ── Colour palette ────────────────────────────────────────────────────────────
+// Declared as SCSS variables (for .scss files) AND as CSS custom properties
+// on :root (for web components and runtime theming).
+
+// Primary – Savings Green
+$primary:              #0f5238;
+$primary-container:    #2d6a4f;
+$on-primary:           #ffffff;
+$on-primary-container: #a8e7c5;
+$inverse-primary:      #95d4b3;
+$primary-fixed:        #b1f0ce;
+$primary-fixed-dim:    #95d4b3;
+$on-primary-fixed:     #002114;
+$on-primary-fixed-variant: #0e5138;
+$surface-tint:         #2c694e;
+
+// Secondary – Portugal Blue
+$secondary:              #1261a3;
+$secondary-container:    #7ab7ff;
+$on-secondary:           #ffffff;
+$on-secondary-container: #00477d;
+$secondary-fixed:        #d2e4ff;
+$secondary-fixed-dim:    #a1c9ff;
+$on-secondary-fixed:     #001c37;
+$on-secondary-fixed-variant: #00487f;
+
+// Tertiary – Alert / Warm
+$tertiary:              #723800;
+$tertiary-container:    #954b00;
+$on-tertiary:           #ffffff;
+$on-tertiary-container: #ffd0b2;
+$tertiary-fixed:        #ffdcc5;
+$tertiary-fixed-dim:    #ffb783;
+$on-tertiary-fixed:     #301400;
+$on-tertiary-fixed-variant: #713700;
+
+// Surface
+$background:                 #fcf9f8;
+$on-background:              #1c1b1b;
+$surface:                    #fcf9f8;
+$surface-dim:                #dcd9d9;
+$surface-bright:             #fcf9f8;
+$surface-container-lowest:   #ffffff;
+$surface-container-low:      #f6f3f2;
+$surface-container:          #f0eded;
+$surface-container-high:     #eae7e7;
+$surface-container-highest:  #e5e2e1;
+$on-surface:                 #1c1b1b;
+$on-surface-variant:         #404943;
+$inverse-surface:            #313030;
+$inverse-on-surface:         #f3f0ef;
+$surface-variant:            #e5e2e1;
+
+// Outline
+$outline:         #707973;
+$outline-variant: #bfc9c1;
+
+// Error
+$error:              #ba1a1a;
+$on-error:           #ffffff;
+$error-container:    #ffdad6;
+$on-error-container: #93000a;
+
+// ── CSS custom properties ─────────────────────────────────────────────────────
+:root {
+  --primary:              #{$primary};
+  --primary-container:    #{$primary-container};
+  --on-primary:           #{$on-primary};
+  --on-primary-container: #{$on-primary-container};
+  --inverse-primary:      #{$inverse-primary};
+  --surface-tint:         #{$surface-tint};
+
+  --secondary:              #{$secondary};
+  --secondary-container:    #{$secondary-container};
+  --on-secondary:           #{$on-secondary};
+  --on-secondary-container: #{$on-secondary-container};
+
+  --tertiary:              #{$tertiary};
+  --tertiary-container:    #{$tertiary-container};
+  --on-tertiary:           #{$on-tertiary};
+  --on-tertiary-container: #{$on-tertiary-container};
+
+  --background:                #{$background};
+  --on-background:             #{$on-background};
+  --surface:                   #{$surface};
+  --surface-dim:               #{$surface-dim};
+  --surface-bright:            #{$surface-bright};
+  --surface-container-lowest:  #{$surface-container-lowest};
+  --surface-container-low:     #{$surface-container-low};
+  --surface-container:         #{$surface-container};
+  --surface-container-high:    #{$surface-container-high};
+  --surface-container-highest: #{$surface-container-highest};
+  --on-surface:                #{$on-surface};
+  --on-surface-variant:        #{$on-surface-variant};
+  --inverse-surface:           #{$inverse-surface};
+  --inverse-on-surface:        #{$inverse-on-surface};
+  --surface-variant:           #{$surface-variant};
+
+  --outline:         #{$outline};
+  --outline-variant: #{$outline-variant};
+
+  --error:              #{$error};
+  --on-error:           #{$on-error};
+  --error-container:    #{$error-container};
+  --on-error-container: #{$on-error-container};
+}

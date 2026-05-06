@@ -1,0 +1,32 @@
+@use '../base/variables' as *;
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-xs;
+  padding: $space-sm $space-md;
+  border: none;
+  border-radius: $radius;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background $transition-fast, box-shadow $transition-fast;
+  white-space: nowrap;
+
+  &--primary {
+    background: var(--primary-container);
+    color: var(--on-primary);
+
+    &:hover  { background: var(--primary); }
+    &:active { transform: scale(0.98); }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: var(--on-surface);
+    border: 1px solid var(--outline-variant);
+
+    &:hover { background: var(--surface-container-low); }
+  }
+}

@@ -1,0 +1,29 @@
+@use '../base/variables' as *;
+
+.search-results {
+  &__inner {
+    padding: $space-lg $space-margin;
+    max-width: $content-max-width;
+    margin: 0 auto;
+  }
+
+  &__title {
+    margin-bottom: $space-md;
+    display: flex;
+    align-items: baseline;
+    gap: $space-sm;
+    flex-wrap: wrap;
+
+    em { font-style: normal; }
+  }
+
+  &__count {
+    color: var(--on-surface-variant);
+  }
+
+  &__empty {
+    color: var(--on-surface-variant);
+    padding: $space-xl 0;
+    text-align: center;
+  }
+}

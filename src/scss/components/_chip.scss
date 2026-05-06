@@ -1,0 +1,29 @@
+@use '../base/variables' as *;
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-xs;
+  height: 32px;
+  padding: 0 $space-sm;
+  background: var(--surface-container);
+  border: 1px solid var(--outline-variant);
+  border-radius: $radius-full;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  transition: background $transition-fast, color $transition-fast, border-color $transition-fast;
+  user-select: none;
+
+  &--active,
+  &[aria-pressed="true"] {
+    background: var(--primary-container);
+    border-color: var(--primary-container);
+    color: var(--on-primary);
+  }
+
+  &:hover:not(&--active) {
+    background: var(--surface-container-high);
+  }
+}

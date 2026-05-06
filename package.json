@@ -5,6 +5,9 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
+    "dev": "node --watch --env-file=.env src/server.js",
+    "build:css": "sass src/scss/main.scss src/public/css/main.css --style=compressed --no-source-map",
+    "watch:css": "sass --watch --no-source-map src/scss/main.scss:src/public/css/main.css",
     "db:init": "node src/db/init.js",
     "scrape": "node src/index.js",
     "test": "node --experimental-vm-modules node_modules/.bin/jest"
@@ -13,8 +16,14 @@
   "author": "Cristian Mocho",
   "license": "ISC",
   "dependencies": {
+    "compression": "^1.8.1",
     "dotenv": "^17.4.2",
+    "ejs": "^5.0.2",
+    "express": "^5.2.1",
+    "express-ejs-layouts": "^2.5.1",
+    "lru-cache": "^11.3.6",
     "mysql2": "^3.22.3",
-    "playwright": "^1.59.1"
+    "playwright": "^1.59.1",
+    "sass": "^1.99.0"
   }
 }

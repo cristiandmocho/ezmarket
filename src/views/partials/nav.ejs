@@ -1,0 +1,20 @@
+<header class="nav">
+  <div class="nav__inner">
+    <a href="/" class="nav__logo">
+      <span class="nav__logo-mark">ez</span>markets
+    </a>
+
+    <form class="nav__search" action="/search" method="get" role="search">
+      <span class="mdi nav__search-icon" aria-hidden="true">search</span>
+      <input
+        class="nav__search-input"
+        type="search"
+        name="q"
+        value="<%= typeof q !== 'undefined' ? q : '' %>"
+        placeholder="Pesquisar produtos..."
+        autocomplete="off"
+        aria-label="Pesquisar produtos"
+      >
+    </form>
+  </div>
+</header>

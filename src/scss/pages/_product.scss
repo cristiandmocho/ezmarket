@@ -1,0 +1,97 @@
+@use '../base/variables' as *;
+
+.product-detail {
+  &__inner {
+    max-width: $content-max-width;
+    margin: 0 auto;
+    padding: $space-lg $space-margin;
+    display: flex;
+    flex-direction: column;
+    gap: $space-xl;
+  }
+
+  &__header {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $space-lg;
+
+    @media (min-width: 640px) {
+      grid-template-columns: 320px 1fr;
+    }
+  }
+
+  &__image-wrap {
+    aspect-ratio: 1;
+    background: var(--surface-container-low);
+    border: 1px solid var(--outline-variant);
+    border-radius: $radius-md;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $space-md;
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: $space-sm;
+    padding-top: $space-sm;
+  }
+
+  &__brand {
+    color: var(--on-surface-variant);
+  }
+
+  &__price {
+    color: var(--primary-container);
+    font-size: 36px;
+    margin-top: $space-sm;
+  }
+
+  &__unit {
+    color: var(--on-surface-variant);
+    margin-top: -$space-sm;
+  }
+
+  &__store {
+    color: var(--on-surface-variant);
+    margin-top: auto;
+  }
+
+  &__history {
+    display: flex;
+    flex-direction: column;
+    gap: $space-md;
+  }
+}
+
+.price-chart-wrap {
+  background: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  border-radius: $radius-md;
+  padding: $space-md;
+  max-height: 320px;
+}
+
+.error-page {
+  &__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-md;
+    padding: $space-xl $space-margin;
+    text-align: center;
+  }
+
+  &__icon {
+    font-size: 64px;
+    color: var(--on-surface-variant);
+    line-height: 1;
+  }
+}

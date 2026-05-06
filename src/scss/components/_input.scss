@@ -1,0 +1,32 @@
+@use '../base/variables' as *;
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &__label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--on-surface-variant);
+    letter-spacing: 0.02em;
+  }
+
+  &__input {
+    height: 52px;
+    padding: 0 $space-md;
+    background: var(--surface-container-lowest);
+    border: 1px solid var(--outline-variant);
+    border-radius: $radius;
+    color: var(--on-surface);
+    outline: none;
+    transition: border-color $transition-base, box-shadow $transition-base;
+
+    &::placeholder { color: var(--on-surface-variant); }
+
+    &:focus {
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 3px rgba(18, 97, 163, 0.12);
+    }
+  }
+}

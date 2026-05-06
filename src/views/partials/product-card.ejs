@@ -1,0 +1,29 @@
+<article class="product-card">
+  <a href="/product/<%= offer.id %>" class="product-card__link">
+    <div class="product-card__image-wrap">
+      <img
+        class="product-card__image"
+        src="<%= offer.image_url || '/images/placeholder.svg' %>"
+        alt="<%= offer.listing_name %>"
+        width="280"
+        height="280"
+        loading="lazy"
+        decoding="async"
+        onerror="this.src='/images/placeholder.svg'"
+      >
+    </div>
+    <div class="product-card__body">
+      <% if (offer.brand) { %>
+        <p class="product-card__brand body-sm"><%= offer.brand %></p>
+      <% } %>
+      <h3 class="product-card__name body-md"><%= offer.listing_name %></h3>
+      <% if (offer.unit_price && offer.unit) { %>
+        <p class="product-card__unit label-sm"><%= offer.unit_price.toFixed(2) %>€/<%= offer.unit %></p>
+      <% } %>
+      <div class="product-card__footer">
+        <span class="product-card__price price-display"><%= offer.price.toFixed(2) %>€</span>
+        <span class="product-card__store label-sm"><%= offer.supermarket_name %></span>
+      </div>
+    </div>
+  </a>
+</article>

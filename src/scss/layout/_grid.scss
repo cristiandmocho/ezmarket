@@ -1,0 +1,14 @@
+@use '../base/variables' as *;
+
+.page-content {
+  width: 100%;
+  max-width: $content-max-width;
+  margin: 0 auto;
+  padding: $space-md $space-margin;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: $space-md;
+}

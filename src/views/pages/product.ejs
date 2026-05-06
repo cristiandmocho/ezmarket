@@ -1,0 +1,45 @@
+<section class="product-detail">
+  <div class="product-detail__inner">
+    <div class="product-detail__header">
+      <div class="product-detail__image-wrap">
+        <img
+          class="product-detail__image"
+          src="<%= offer.image_url || '/images/placeholder.svg' %>"
+          alt="<%= offer.listing_name %>"
+          width="400"
+          height="400"
+          decoding="async"
+          onerror="this.src='/images/placeholder.svg'"
+        >
+      </div>
+      <div class="product-detail__info">
+        <% if (offer.brand) { %>
+          <p class="product-detail__brand body-sm"><%= offer.brand %></p>
+        <% } %>
+        <h1 class="product-detail__name headline-lg"><%= offer.listing_name %></h1>
+        <p class="product-detail__price price-display"><%= offer.price.toFixed(2) %>€</p>
+        <% if (offer.unit_price && offer.unit) { %>
+          <p class="product-detail__unit label-sm"><%= offer.unit_price.toFixed(2) %>€/<%= offer.unit %></p>
+        <% } %>
+        <p class="product-detail__store label-md">Disponível em: <%= offer.supermarket_name %></p>
+        <a class="btn btn--primary" href="<%= offer.product_url %>" target="_blank" rel="noopener">
+          Ver no supermercado
+          <span class="mdi" aria-hidden="true">open_in_new</span>
+        </a>
+      </div>
+    </div>
+
+    <% if (history.length > 1) { %>
+      <div class="product-detail__history">
+        <h2 class="headline-md">Histórico de preço</h2>
+        <div class="price-chart-wrap">
+          <canvas id="priceChart" aria-label="Gráfico de histórico de preço" role="img"></canvas>
+        </div>
+      </div>
+      <script type="module">
+        import '/js/priceChart.js';
+        window.__priceHistory = <%- JSON.stringify(history) %>;
+      </script>
+    <% } %>
+  </div>
+</section>

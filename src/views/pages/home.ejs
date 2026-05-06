@@ -1,0 +1,30 @@
+<section class="hero">
+  <div class="hero__inner">
+    <h1 class="hero__headline headline-xl">Compare preços em todos os supermercados</h1>
+    <p class="hero__sub body-lg">Poupe dinheiro na sua compra semanal. Resultados em segundos.</p>
+    <form class="hero__search" action="/search" method="get" role="search">
+      <span class="mdi hero__search-icon" aria-hidden="true">search</span>
+      <input
+        class="hero__search-input"
+        type="search"
+        name="q"
+        placeholder="Ex: leite meio-gordo, arroz agulha, frango..."
+        autocomplete="off"
+        aria-label="Pesquisar produtos"
+        autofocus
+      >
+      <button class="hero__search-btn btn btn--primary" type="submit">Pesquisar</button>
+    </form>
+  </div>
+</section>
+
+<section class="deals">
+  <div class="deals__inner">
+    <h2 class="deals__title headline-md">Novidades recentes</h2>
+    <div class="product-grid">
+      <% deals.forEach(offer => { %>
+        <%- include('../partials/product-card', { offer }) %>
+      <% }) %>
+    </div>
+  </div>
+</section>

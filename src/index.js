@@ -4,9 +4,21 @@ import pool from './db/connection.js';
 import { upsertProduct } from './models/product.js';
 import { findOrCreateCategoryPath } from './models/category.js';
 
+const target = process.argv[2]?.toLowerCase();
+const validSlugs = scrapers.map(s => s.getSlug());
+
+if (target && target !== 'all' && !validSlugs.includes(target)) {
+  console.error(`Unknown supermarket "${target}". Valid options: all, ${validSlugs.join(', ')}`);
+  process.exit(1);
+}
+
+const queue = target && target !== 'all'
+  ? scrapers.filter(s => s.getSlug() === target)
+  : scrapers;
+
 const browser = await chromium.launch({ headless: true });
 
-for (const scraper of scrapers) {
+for (const scraper of queue) {
   console.log(`\n[${scraper.getName()}] Starting…`);
 
   const [rows] = await pool.execute(

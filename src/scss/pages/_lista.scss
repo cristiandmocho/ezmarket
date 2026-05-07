@@ -1,0 +1,252 @@
+@use '../base/palette' as *;
+@use '../base/variables' as *;
+
+.lista-detail {
+  max-width: 600px;
+  margin: 0 auto;
+  padding-bottom: 80px;
+}
+
+// Hero banner
+.lista-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-sm;
+  background: var(--primary);
+  border-radius: $radius-md;
+  margin: $space-md $space-margin;
+  padding: $space-md;
+  color: #fff;
+
+  &__inner { flex: 1; min-width: 0; }
+
+  &__label {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-bottom: 4px;
+  }
+
+  &__price {
+    font-family: 'Manrope', sans-serif;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    strong { font-weight: 700; }
+  }
+
+  &__badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    background: #fff;
+    color: var(--primary);
+    border-radius: $radius;
+    padding: 8px 12px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+
+  &__badge-savings {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  &__badge-sub {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    opacity: 0.7;
+    white-space: nowrap;
+  }
+}
+
+// Items list
+.lista-detail__items {
+  border-top: 1px solid var(--outline-variant);
+}
+
+.lista-item {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-sm;
+  padding: $space-sm $space-margin;
+  border-bottom: 1px solid var(--outline-variant);
+  position: relative;
+
+  &__img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    border-radius: $radius;
+    flex-shrink: 0;
+    background: var(--surface-container-low);
+
+    &--placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--on-surface-variant);
+
+      .mdi { font-size: 28px; }
+    }
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+    padding-top: 2px;
+    padding-bottom: 24px;
+  }
+
+  &__name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--on-surface);
+    line-height: 1.3;
+  }
+
+  &__meta {
+    font-size: 12px;
+    color: var(--on-surface-variant);
+    margin-top: 2px;
+  }
+
+  &__price {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--on-surface);
+    margin-top: 6px;
+  }
+
+  &__trend {
+    .mdi { font-size: 16px; line-height: 1; }
+
+    &--down .mdi { color: var(--primary); }
+    &--up   .mdi { color: #c0392b; }
+    &--avg  .mdi { color: var(--on-surface-variant); }
+  }
+
+  &__stepper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--outline-variant);
+    border-radius: $radius;
+    padding: 4px 6px;
+    flex-shrink: 0;
+    align-self: flex-start;
+    margin-top: 2px;
+  }
+
+  &__step {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: $radius-sm;
+    color: var(--primary);
+    transition: background $transition-fast;
+
+    .mdi { font-size: 18px; line-height: 1; }
+
+    &:hover { background: var(--surface-container); }
+  }
+
+  &__qty {
+    font-weight: 700;
+    font-size: 15px;
+    min-width: 20px;
+    text-align: center;
+    color: var(--on-surface);
+  }
+
+  &__transfer {
+    position: absolute;
+    right: $space-margin;
+    bottom: $space-sm;
+    color: var(--secondary);
+    line-height: 1;
+
+    .mdi { font-size: 20px; }
+  }
+
+  &--removing {
+    opacity: 0.4;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+}
+
+// Market comparison section
+.lista-detail__comparison {
+  padding: $space-md 0;
+
+  &-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--on-surface);
+    padding: 0 $space-margin;
+    margin-bottom: $space-sm;
+  }
+
+  &-list {
+    border-top: 1px solid var(--outline-variant);
+  }
+}
+
+.comparison-row {
+  display: flex;
+  align-items: center;
+  gap: $space-sm;
+  padding: $space-sm $space-margin;
+  border-bottom: 1px solid var(--outline-variant);
+
+  &--cheapest {
+    background: var(--surface-container-low);
+  }
+
+  &__info { flex: 1; min-width: 0; }
+
+  &__name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--on-surface);
+  }
+
+  &__sub {
+    font-size: 12px;
+    color: var(--on-surface-variant);
+    margin-top: 2px;
+  }
+
+  &__price-block { text-align: right; flex-shrink: 0; }
+
+  &__price {
+    font-family: 'Manrope', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  &__items {
+    font-size: 11px;
+    color: var(--on-surface-variant);
+    margin-top: 2px;
+  }
+}

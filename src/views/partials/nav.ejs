@@ -1,3 +1,19 @@
+<% if (locals.backNav) { %>
+<header class="nav">
+  <a href="<%= backNav.href %>" class="icon-btn" aria-label="Voltar">
+    <span class="mdi">arrow_back</span>
+  </a>
+  <span class="nav__title"><%= backNav.title %></span>
+  <div class="nav__actions">
+    <button class="icon-btn" aria-label="Partilhar">
+      <span class="mdi">share</span>
+    </button>
+    <button class="icon-btn" aria-label="Editar nome">
+      <span class="mdi">edit</span>
+    </button>
+  </div>
+</header>
+<% } else { %>
 <header class="nav">
   <button class="icon-btn" aria-label="Abrir menu">
     <span class="mdi">menu</span>
@@ -18,3 +34,4 @@
     </button>
   </div>
 </header>
+<% } %>

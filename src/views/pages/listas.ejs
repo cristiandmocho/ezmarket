@@ -1,0 +1,89 @@
+<div class="listas">
+  <div class="listas__header">
+    <h1 class="listas__title">As Suas Listas</h1>
+    <a href="/listas/nova" class="listas__add-btn" aria-label="Nova lista">
+      <span class="mdi">add</span>
+    </a>
+  </div>
+
+  <% if (!lists.length) { %>
+    <div class="listas__empty">
+      <span class="mdi">checklist</span>
+      <p class="listas__empty-title">Ainda não tem listas</p>
+      <p class="listas__empty-text">Crie a sua primeira lista de compras e compare preços nos supermercados.</p>
+    </div>
+    <a href="/listas/nova" class="lista-card lista-card--new">
+      <span class="mdi lista-card__new-icon">add_circle_outline</span>
+      <span class="lista-card__new-label">Nova Lista de Compras</span>
+    </a>
+  <% } else { %>
+    <div class="listas__feed">
+      <% lists.forEach(list => { %>
+
+        <% if (list.cardType === 'expanded' || list.cardType === 'featured') { %>
+          <a href="/listas/<%= list.id %>" class="lista-card lista-card--<%= list.cardType %>">
+            <% if (list.cardType === 'featured') { %>
+              <span class="lista-card__watermark" aria-hidden="true"><%= list.bestPrice %></span>
+            <% } %>
+            <div class="lista-card__header">
+              <span class="lista-card__name"><%= list.name %></span>
+              <span class="lista-card__chip"><%= list.itemCount %> Itens</span>
+            </div>
+            <div class="lista-card__meta">
+              <span class="mdi lista-card__meta-icon" aria-hidden="true">schedule</span>
+              <span class="lista-card__meta-text">Atualizada <%= list.updatedAt %></span>
+            </div>
+            <% if (list.basket && list.basket.length) { %>
+              <div class="lista-card__store">
+                <span class="store-badge store-badge--<%= list.basket[0].slug %>">
+                  <img src="/images/logos/<%= list.basket[0].slug %>.avif"
+                       alt="<%= list.basket[0].name %>"
+                       width="28" height="28"
+                       loading="lazy" decoding="async"
+                       onerror="this.closest('.store-badge').classList.add('store-badge--no-logo');this.remove()">
+                  <span aria-hidden="true"><%= list.basket[0].initials %></span>
+                </span>
+                <span class="lista-card__store-name"><%= list.basket[0].name %></span>
+                <div class="lista-card__price-block">
+                  <span class="lista-card__price"><%= list.bestPrice %></span>
+                  <span class="lista-card__savings"><%= list.savingsStr %></span>
+                </div>
+              </div>
+            <% } %>
+          </a>
+
+        <% } else { %>
+          <a href="/listas/<%= list.id %>" class="lista-card lista-card--compact">
+            <span class="mdi lista-card__compact-icon" aria-hidden="true">checklist</span>
+            <span class="lista-card__compact-name"><%= list.name %></span>
+            <span class="lista-card__compact-meta">
+              <%= list.itemCount %> Itens<% if (list.bestPrice) { %> &bull; <%= list.bestPrice %><% } %>
+            </span>
+            <span class="mdi lista-card__chevron" aria-hidden="true">chevron_right</span>
+          </a>
+        <% } %>
+
+      <% }) %>
+
+      <a href="/listas/nova" class="lista-card lista-card--new">
+        <span class="mdi lista-card__new-icon">add_circle_outline</span>
+        <span class="lista-card__new-label">Nova Lista de Compras</span>
+      </a>
+    </div>
+
+    <% if (insight) { %>
+      <div class="listas__insight">
+        <span class="mdi listas__insight-icon" aria-hidden="true">savings</span>
+        <p class="listas__insight-title">Potencial de Poupança</p>
+        <p class="listas__insight-text">
+          Se comprares estes <%= insight.totalItems %> itens no
+          <strong><%= insight.bestStore %></strong> em vez do
+          <strong><%= insight.worstStore %></strong>,
+          podes poupar até <strong><%= insight.totalSavings %></strong> este mês.
+        </p>
+        <a href="/search" class="btn btn--primary listas__insight-cta">Ver Comparativo</a>
+      </div>
+    <% } %>
+  <% } %>
+</div>
+

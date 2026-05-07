@@ -137,13 +137,32 @@ export async function getDefaultList(userId) {
   return result;
 }
 
+export async function getUserLists(userId) {
+  const key = cacheKey('user-lists', userId);
+  if (cache.has(key)) return cache.get(key);
+
+  const [rows] = await pool.query(`
+    SELECT sl.id, sl.name, sl.updated_at,
+           COUNT(sli.id) AS item_count
+    FROM shopping_lists sl
+    LEFT JOIN shopping_list_items sli ON sli.list_id = sl.id
+    WHERE sl.user_id = ?
+    GROUP BY sl.id, sl.name, sl.updated_at
+    ORDER BY sl.updated_at DESC
+  `, [userId]);
+
+  if (rows.length) cache.set(key, rows);
+  return rows;
+}
+
 export async function getListBasket(listId) {
   const key = cacheKey('basket', listId);
   if (cache.has(key)) return cache.get(key);
 
   const [rows] = await pool.query(`
     SELECT s.id AS supermarket_id, s.name, s.slug,
-           SUM(cheapest.price * sli.quantity) AS total
+           SUM(cheapest.price * sli.quantity) AS total,
+           COUNT(DISTINCT sli.product_id) AS items_found
     FROM shopping_list_items sli
     JOIN (
       SELECT po.product_id, po.supermarket_id, MIN(po.price) AS price
@@ -166,11 +185,88 @@ export async function getListBasket(listId) {
     const price = Number(r.total);
     const diff = price - avg;
     const trend = diff < -0.5 ? 'down' : diff > 0.5 ? 'up' : 'avg';
-    return { name: r.name, slug: r.slug, initials: initials(r.name), price, diff, trend };
+    return { name: r.name, slug: r.slug, initials: initials(r.name), price, diff, trend, itemsFound: Number(r.items_found) };
   });
 
   cache.set(key, stores);
   return stores;
+}
+
+export async function getListById(listId, userId) {
+  const key = cacheKey('list', listId, userId);
+  if (cache.has(key)) return cache.get(key);
+
+  const [rows] = await pool.query(`
+    SELECT sl.id, sl.name, COUNT(sli.id) AS item_count
+    FROM shopping_lists sl
+    LEFT JOIN shopping_list_items sli ON sli.list_id = sl.id
+    WHERE sl.id = ? AND sl.user_id = ?
+    GROUP BY sl.id, sl.name
+  `, [listId, userId]);
+
+  const result = rows[0] ?? null;
+  if (result) cache.set(key, result);
+  return result;
+}
+
+export async function getListItems(listId) {
+  const key = cacheKey('list-items', listId);
+  if (cache.has(key)) return cache.get(key);
+
+  const [rows] = await pool.query(`
+    SELECT
+      sli.id AS item_id,
+      sli.quantity,
+      sli.product_id,
+      best.listing_name,
+      best.brand,
+      best.price,
+      best.unit,
+      best.image_url,
+      best.store_name,
+      best.store_slug,
+      stats.avg_price
+    FROM shopping_list_items sli
+    LEFT JOIN (
+      SELECT po.product_id, po.listing_name, po.brand, po.price, po.unit, po.image_url,
+             s.name AS store_name, s.slug AS store_slug,
+             ROW_NUMBER() OVER (PARTITION BY po.product_id ORDER BY po.price ASC) AS rn
+      FROM product_offers po
+      JOIN supermarkets s ON s.id = po.supermarket_id
+      WHERE po.is_available = 1
+    ) best ON best.product_id = sli.product_id AND best.rn = 1
+    LEFT JOIN (
+      SELECT product_id, AVG(price) AS avg_price
+      FROM product_offers
+      WHERE is_available = 1
+      GROUP BY product_id
+    ) stats ON stats.product_id = sli.product_id
+    WHERE sli.list_id = ?
+    ORDER BY sli.id
+  `, [listId]);
+
+  if (rows.length) cache.set(key, rows);
+  return rows;
+}
+
+export async function updateListItem(itemId, listId, userId, quantity) {
+  if (quantity <= 0) {
+    await pool.query(
+      'DELETE FROM shopping_list_items WHERE id = ? AND list_id = ?',
+      [itemId, listId]
+    );
+  } else {
+    await pool.query(
+      'UPDATE shopping_list_items SET quantity = ? WHERE id = ? AND list_id = ?',
+      [quantity, itemId, listId]
+    );
+  }
+  await pool.query('UPDATE shopping_lists SET updated_at = NOW() WHERE id = ?', [listId]);
+  cache.delete(cacheKey('list-items', listId));
+  cache.delete(cacheKey('basket', listId));
+  cache.delete(cacheKey('list', listId, userId));
+  cache.delete(cacheKey('user-lists', userId));
+  cache.delete(cacheKey('default-list', userId));
 }
 
 export async function getPriceHistory(offerId, days = 90) {

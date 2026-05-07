@@ -4,6 +4,7 @@ import * as searchController from '../controllers/searchController.js';
 import * as productController from '../controllers/productController.js';
 import * as authController from '../controllers/authController.js';
 import * as profileController from '../controllers/profileController.js';
+import * as listController from '../controllers/listController.js';
 
 const router = Router();
 
@@ -12,6 +13,8 @@ router.get('/search', searchController.index);
 router.get('/product/:slug', productController.show);
 
 router.get('/perfil', profileController.show);
+router.get('/listas', listController.index);
+router.get('/listas/:id', listController.show);
 
 router.get('/login', authController.loginPage);
 router.post('/login', authController.loginSubmit);

@@ -1,0 +1,93 @@
+<div class="lista-detail" data-list-id="<%= list.id %>">
+
+  <% if (hero) { %>
+  <div class="lista-hero">
+    <div class="lista-hero__inner">
+      <p class="lista-hero__label">Supermercado mais barato</p>
+      <p class="lista-hero__price"><%= hero.storeName %> <strong><%= hero.price %></strong></p>
+    </div>
+    <% if (hero.savings) { %>
+    <div class="lista-hero__badge">
+      <span class="lista-hero__badge-savings">Poupa <%= hero.savings %></span>
+      <span class="lista-hero__badge-sub">APENAS HOJE</span>
+    </div>
+    <% } %>
+  </div>
+  <% } %>
+
+  <div class="lista-detail__items">
+    <% items.forEach(item => { %>
+    <div class="lista-item" data-item-id="<%= item.itemId %>">
+      <% if (item.imageUrl) { %>
+      <img class="lista-item__img"
+           src="<%= item.imageUrl %>"
+           alt="<%= item.name %>"
+           width="64" height="64"
+           loading="lazy" decoding="async">
+      <% } else { %>
+      <div class="lista-item__img lista-item__img--placeholder">
+        <span class="mdi">grocery</span>
+      </div>
+      <% } %>
+
+      <div class="lista-item__info">
+        <p class="lista-item__name"><%= item.name %></p>
+        <p class="lista-item__meta"><%= item.brand %><% if (item.brand && item.unit) { %> &bull; <% } %><%= item.unit %></p>
+        <p class="lista-item__price">
+          <span><%= item.priceFormatted %></span>
+          <span class="lista-item__trend lista-item__trend--<%= item.trend %>" aria-hidden="true">
+            <span class="mdi"><%= item.trend === 'down' ? 'trending_down' : item.trend === 'up' ? 'trending_up' : 'trending_flat' %></span>
+          </span>
+        </p>
+      </div>
+
+      <div class="lista-item__stepper">
+        <button class="lista-item__step lista-item__step--minus" aria-label="Diminuir quantidade">
+          <span class="mdi">remove</span>
+        </button>
+        <span class="lista-item__qty"><%= item.quantity %></span>
+        <button class="lista-item__step lista-item__step--plus" aria-label="Aumentar quantidade">
+          <span class="mdi">add</span>
+        </button>
+      </div>
+
+      <a href="/search?q=<%= encodeURIComponent(item.name) %>"
+         class="lista-item__transfer"
+         aria-label="Pesquisar alternativas">
+        <span class="mdi">swap_horiz</span>
+      </a>
+    </div>
+    <% }) %>
+  </div>
+
+  <% if (comparisonRows.length) { %>
+  <section class="lista-detail__comparison">
+    <h2 class="lista-detail__comparison-title">Comparação de Mercados</h2>
+    <div class="lista-detail__comparison-list">
+      <% comparisonRows.forEach(store => { %>
+      <div class="comparison-row<%= store.isCheapest ? ' comparison-row--cheapest' : '' %>">
+        <span class="store-badge store-badge--<%= store.slug %>">
+          <img src="/images/logos/<%= store.slug %>.avif"
+               alt="<%= store.name %>"
+               width="32" height="32"
+               loading="lazy" decoding="async"
+               onerror="this.closest('.store-badge').classList.add('store-badge--no-logo');this.remove()">
+          <span aria-hidden="true"><%= store.initials %></span>
+        </span>
+        <div class="comparison-row__info">
+          <p class="comparison-row__name"><%= store.name %></p>
+          <p class="comparison-row__sub"><%= store.diffLabel %></p>
+        </div>
+        <div class="comparison-row__price-block">
+          <p class="comparison-row__price"><%= store.price %></p>
+          <p class="comparison-row__items"><%= store.itemsFound %> itens encontrados</p>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+  </section>
+  <% } %>
+
+</div>
+
+<script type="module" src="/js/lista.js"></script>

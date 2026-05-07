@@ -20,6 +20,17 @@ $nav-height: 52px;
     &:hover { background: var(--primary-container); }
   }
 
+  &__title {
+    flex: 1;
+    font-family: 'Manrope', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--on-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   &__brand {
     flex: 1;
     text-align: left;

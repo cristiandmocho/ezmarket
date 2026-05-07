@@ -15,26 +15,6 @@ $nav-height: 52px;
   padding: 0 $space-margin;
   gap: $space-sm;
 
-  &__hamburger,
-  &__settings {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border: none;
-    background: none;
-    border-radius: $radius;
-    color: var(--on-surface);
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: background $transition-fast;
-
-    .mdi { font-size: 22px; line-height: 1; }
-
-    &:hover { background: var(--surface-container); }
-  }
-
   &__brand {
     flex: 1;
     text-align: left;

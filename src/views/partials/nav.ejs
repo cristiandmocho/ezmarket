@@ -1,5 +1,5 @@
 <header class="nav">
-  <button class="nav__hamburger" aria-label="Abrir menu">
+  <button class="icon-btn" aria-label="Abrir menu">
     <span class="mdi">menu</span>
   </button>
 
@@ -7,13 +7,13 @@
 
   <div class="nav__actions">
     <% if (locals.user) { %>
-    <a href="/logout" class="nav__login" aria-label="Terminar sessão">
+    <a href="/logout" class="icon-btn" aria-label="Terminar sessão">
       <span class="mdi">logout</span>
     </a>
     <% } else { %>
     <a href="/login" class="nav__login">Login</a>
     <% } %>
-    <button class="nav__settings" aria-label="Definições de filtros">
+    <button class="icon-btn" aria-label="Definições de filtros">
       <span class="mdi">tune</span>
     </button>
   </div>

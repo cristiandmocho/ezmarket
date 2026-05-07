@@ -2,18 +2,22 @@ import { getDeals, getSupermarkets, getPriceCount, getDefaultList, getListBasket
 
 export async function index(req, res, next) {
   try {
-    const [deals, supermarkets, priceCount, list] = await Promise.all([
+    const userId = req.user?.id ?? null;
+
+    const [deals, supermarkets, priceCount] = await Promise.all([
       getDeals(8),
       getSupermarkets(),
       getPriceCount(),
-      getDefaultList(),
     ]);
 
     let basket = null;
-    if (list) {
-      const stores = await getListBasket(list.id);
-      if (stores) {
-        basket = { label: list.name, itemCount: Number(list.itemCount), stores };
+    if (userId) {
+      const list = await getDefaultList(userId);
+      if (list) {
+        const stores = await getListBasket(list.id);
+        if (stores) {
+          basket = { label: list.name, itemCount: Number(list.itemCount), stores };
+        }
       }
     }
 

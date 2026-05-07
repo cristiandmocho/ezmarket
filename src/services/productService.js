@@ -117,8 +117,8 @@ function initials(name) {
   return name.split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0, 2);
 }
 
-export async function getDefaultList() {
-  const key = 'default-list';
+export async function getDefaultList(userId) {
+  const key = cacheKey('default-list', userId);
   if (cache.has(key)) return cache.get(key);
 
   const [rows] = await pool.query(`
@@ -126,10 +126,11 @@ export async function getDefaultList() {
            COUNT(sli.id) AS itemCount
     FROM shopping_lists sl
     LEFT JOIN shopping_list_items sli ON sli.list_id = sl.id
+    WHERE sl.user_id = ?
     GROUP BY sl.id, sl.name
     ORDER BY sl.updated_at DESC
     LIMIT 1
-  `);
+  `, [userId]);
 
   const result = rows[0] ?? null;
   if (result) cache.set(key, result);

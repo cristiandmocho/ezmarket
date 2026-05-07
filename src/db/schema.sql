@@ -76,11 +76,12 @@ CREATE TABLE product_price_history (
 
 CREATE TABLE users (
   id            INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  email         VARCHAR(255) NOT NULL,
+  auth0_id      VARCHAR(128) NOT NULL,
+  email         VARCHAR(255) NULL,
   display_name  VARCHAR(100) NULL,
-  password_hash VARCHAR(255) NULL,
   created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_auth0 (auth0_id),
   UNIQUE KEY uq_email (email)
 );
 

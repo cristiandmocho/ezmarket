@@ -6,7 +6,13 @@
   <a href="/" class="nav__brand">Quanto Fica?</a>
 
   <div class="nav__actions">
+    <% if (locals.user) { %>
+    <a href="/logout" class="nav__login" aria-label="Terminar sessão">
+      <span class="mdi">logout</span>
+    </a>
+    <% } else { %>
     <a href="/login" class="nav__login">Login</a>
+    <% } %>
     <button class="nav__settings" aria-label="Definições de filtros">
       <span class="mdi">tune</span>
     </button>

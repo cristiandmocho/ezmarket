@@ -5,6 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { logger } from './middleware/logger.js';
 import { preferences } from './middleware/preferences.js';
+import { oidc, syncUser } from './middleware/auth.js';
 import webRouter from './routes/web.js';
 import apiRouter from './routes/api.js';
 
@@ -22,8 +23,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(expressLayouts);
 app.set('layout', 'layouts/main');
 
+app.use(oidc);
 app.use(logger);
 app.use(preferences);
+app.use(syncUser);
 
 app.use('/', webRouter);
 app.use('/api', apiRouter);

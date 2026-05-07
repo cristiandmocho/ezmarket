@@ -3,6 +3,50 @@ if (!detail) throw new Error('lista.js loaded outside lista page');
 
 const listId = detail.dataset.listId;
 
+// ── Rename modal ─────────────────────────────────────────────────────────────
+
+const renameBtn    = document.getElementById('btn-rename');
+const renameDialog = document.getElementById('rename-dialog');
+const renameForm   = document.getElementById('rename-form');
+const renameInput  = document.getElementById('rename-input');
+const renameCancel = document.getElementById('rename-cancel');
+
+if (renameBtn && renameDialog) {
+  renameBtn.addEventListener('click', () => {
+    renameInput.value = renameBtn.dataset.renameName || '';
+    renameDialog.showModal();
+    renameInput.select();
+  });
+
+  renameCancel.addEventListener('click', () => renameDialog.close());
+
+  renameForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const name = renameInput.value.trim();
+    if (!name) return;
+
+    const saveBtn = document.getElementById('rename-save');
+    saveBtn.disabled = true;
+
+    try {
+      const res = await fetch(`/api/listas/${listId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name }),
+      });
+      if (!res.ok) throw new Error('server error');
+
+      document.querySelector('.nav__title').textContent = name;
+      renameBtn.dataset.renameName = name;
+      renameDialog.close();
+    } catch {
+      // silent — dialog stays open so user can retry
+    } finally {
+      saveBtn.disabled = false;
+    }
+  });
+}
+
 detail.addEventListener('click', async e => {
   const btn = e.target.closest('.lista-item__step');
   if (!btn) return;

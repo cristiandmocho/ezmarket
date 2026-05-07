@@ -8,9 +8,17 @@
     <button class="icon-btn" aria-label="Partilhar">
       <span class="mdi">share</span>
     </button>
-    <button class="icon-btn" aria-label="Editar nome">
+    <% if (backNav.listId) { %>
+    <button class="icon-btn" id="btn-rename" aria-label="Editar nome"
+            data-rename-id="<%= backNav.listId %>"
+            data-rename-name="<%= backNav.title %>">
       <span class="mdi">edit</span>
     </button>
+    <% } else { %>
+    <button class="icon-btn" aria-label="Editar">
+      <span class="mdi">edit</span>
+    </button>
+    <% } %>
   </div>
 </header>
 <% } else { %>

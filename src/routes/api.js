@@ -7,10 +7,12 @@ import * as listController from '../controllers/listController.js';
 const router = Router();
 
 router.get('/search', searchController.apiSearch);
+router.get('/autocomplete', searchController.apiAutocomplete);
 router.get('/deals', homeController.apiDeals);
 router.get('/product/:id', productController.apiShow);
 router.get('/product/:id/history', productController.apiHistory);
 
+router.patch('/listas/:id', listController.apiUpdateList);
 router.patch('/listas/:id/items/:itemId', listController.apiUpdateItem);
 
 export default router;

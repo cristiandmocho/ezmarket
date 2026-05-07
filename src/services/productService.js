@@ -269,6 +269,35 @@ export async function updateListItem(itemId, listId, userId, quantity) {
   cache.delete(cacheKey('default-list', userId));
 }
 
+export async function getAutocomplete(q, limit = 6) {
+  const key = cacheKey('autocomplete', q, limit);
+  if (cache.has(key)) return cache.get(key);
+
+  const like = `%${q}%`;
+  const [rows] = await pool.query(
+    `SELECT po.listing_name, po.brand, MIN(po.image_url) AS image_url, MIN(po.price) AS min_price
+     FROM product_offers po
+     WHERE (po.listing_name LIKE ? OR po.brand LIKE ?) AND po.is_available = 1
+     GROUP BY po.listing_name, po.brand
+     ORDER BY po.listing_name
+     LIMIT ?`,
+    [like, like, limit]
+  );
+
+  if (rows.length) cache.set(key, rows);
+  return rows;
+}
+
+export async function updateList(listId, userId, name) {
+  await pool.query(
+    `UPDATE shopping_lists SET name = ?, updated_at = NOW() WHERE id = ? AND user_id = ?`,
+    [name, listId, userId]
+  );
+  cache.delete(cacheKey('list', listId, userId));
+  cache.delete(cacheKey('user-lists', userId));
+  cache.delete(cacheKey('default-list', userId));
+}
+
 export async function getPriceHistory(offerId, days = 90) {
   const key = cacheKey('history', offerId, days);
   if (cache.has(key)) return cache.get(key);

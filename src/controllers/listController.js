@@ -1,4 +1,4 @@
-import { getUserLists, getListBasket, getListById, getListItems, updateListItem } from '../services/productService.js';
+import { getUserLists, getListBasket, getListById, getListItems, updateListItem, updateList } from '../services/productService.js';
 
 function relativeTime(date) {
   const ms = Date.now() - new Date(date).getTime();
@@ -92,6 +92,24 @@ export async function index(req, res, next) {
   }
 }
 
+export async function create(req, res, next) {
+  try {
+    if (!req.oidc.isAuthenticated()) {
+      return res.oidc.login({ returnTo: '/listas/nova' });
+    }
+    res.render('pages/lista', {
+      title: 'Nova Lista — Quanto Fica?',
+      currentPage: 'lists',
+      list: null,
+      items: [],
+      comparisonRows: [],
+      hero: null,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function show(req, res, next) {
   try {
     if (!req.oidc.isAuthenticated()) {
@@ -148,7 +166,7 @@ export async function show(req, res, next) {
     res.render('pages/lista', {
       title: `${list.name} — Quanto Fica?`,
       currentPage: 'lists',
-      backNav: { href: '/listas', title: list.name },
+      backNav: { href: '/listas', title: list.name, listId: list.id },
       list: { id: list.id, name: list.name },
       items,
       comparisonRows,
@@ -158,6 +176,27 @@ export async function show(req, res, next) {
         savings:   savings > 0.01 ? formatEur(savings) : null,
       } : null,
     });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function apiUpdateList(req, res, next) {
+  try {
+    if (!req.oidc.isAuthenticated()) return res.status(401).json({ error: 'Não autorizado' });
+    const userId = req.user?.id ?? null;
+    if (!userId) return res.status(401).json({ error: 'Não autorizado' });
+
+    const listId = Number(req.params.id);
+    const name = req.body.name?.trim();
+
+    if (!listId || !name) return res.status(400).json({ error: 'Parâmetros inválidos' });
+
+    const list = await getListById(listId, userId);
+    if (!list) return res.status(404).json({ error: 'Lista não encontrada' });
+
+    await updateList(listId, userId, name);
+    res.json({ ok: true, name });
   } catch (err) {
     next(err);
   }

@@ -1,22 +1,106 @@
-<section class="search-results">
-  <div class="search-results__inner">
-    <% if (q) { %>
-      <h1 class="search-results__title headline-md">
-        Resultados para <em>"<%= q %>"</em>
-        <span class="search-results__count label-sm"><%= results.length %> produto<%= results.length !== 1 ? 's' : '' %></span>
-      </h1>
-    <% } else { %>
-      <h1 class="search-results__title headline-md">Pesquise um produto</h1>
-    <% } %>
+<div class="search-page">
 
-    <% if (results.length > 0) { %>
-      <div class="product-grid">
-        <% results.forEach(offer => { %>
-          <%- include('../partials/product-card', { offer }) %>
-        <% }) %>
+  <div class="search-bar-wrap">
+    <form class="search-bar" action="/search" method="get" role="search" id="search-form">
+      <span class="mdi search-bar__icon" aria-hidden="true">search</span>
+      <input
+        class="search-bar__input"
+        type="search"
+        name="q"
+        id="search-input"
+        placeholder="Procurar produtos..."
+        value="<%= q %>"
+        autocomplete="off"
+        aria-label="Pesquisar produtos"
+        aria-autocomplete="list"
+        aria-controls="search-autocomplete"
+      >
+      <button class="search-bar__clear" type="button" id="search-clear" aria-label="Limpar pesquisa"<%= q ? '' : ' hidden' %>>
+        <span class="mdi">close</span>
+      </button>
+    </form>
+
+    <ul class="search-autocomplete" id="search-autocomplete" role="listbox" aria-label="Sugestões" hidden></ul>
+  </div>
+
+  <% if (!q) { %>
+  <div class="search-idle" id="search-idle">
+
+    <section class="search-section">
+      <h2 class="search-section__title">Sugestões de Pesquisa</h2>
+      <ul class="search-trending">
+        <li><button class="search-trending__item" type="button" data-q="Leite Meio-Gordo">
+          <span class="mdi search-trending__icon">trending_up</span>Leite Meio-Gordo
+        </button></li>
+        <li><button class="search-trending__item" type="button" data-q="Arroz Agulha 1kg">
+          <span class="mdi search-trending__icon">trending_up</span>Arroz Agulha 1kg
+        </button></li>
+        <li><button class="search-trending__item" type="button" data-q="Detergente Máquina Roupa">
+          <span class="mdi search-trending__icon">trending_up</span>Detergente Máquina Roupa
+        </button></li>
+        <li><button class="search-trending__item" type="button" data-q="Azeite Virgem Extra">
+          <span class="mdi search-trending__icon">trending_up</span>Azeite Virgem Extra
+        </button></li>
+        <li><button class="search-trending__item" type="button" data-q="Pão de Forma">
+          <span class="mdi search-trending__icon">trending_up</span>Pão de Forma
+        </button></li>
+      </ul>
+    </section>
+
+    <section class="search-section" id="recent-section" hidden>
+      <div class="search-section__header">
+        <h2 class="search-section__title">Pesquisas Recentes</h2>
+        <button class="search-section__clear-btn" id="recent-clear" type="button">Limpar tudo</button>
       </div>
-    <% } else if (q) { %>
-      <p class="search-results__empty body-md">Nenhum resultado encontrado para "<%= q %>".</p>
+      <div class="search-recents" id="search-recents" role="list"></div>
+    </section>
+
+    <section class="search-section">
+      <h2 class="search-section__title">Categorias Populares</h2>
+      <div class="search-categories">
+        <button class="search-category search-category--fruta" type="button" data-q="Fruta">
+          <span class="mdi search-category__icon">nutrition</span>
+          <span class="search-category__label">Fruta</span>
+        </button>
+        <button class="search-category search-category--padaria" type="button" data-q="Pão">
+          <span class="mdi search-category__icon">breakfast_dining</span>
+          <span class="search-category__label">Padaria</span>
+        </button>
+        <button class="search-category search-category--laticinios" type="button" data-q="Leite">
+          <span class="mdi search-category__icon">water_drop</span>
+          <span class="search-category__label">Laticínios</span>
+        </button>
+        <button class="search-category search-category--vegetais" type="button" data-q="Legumes">
+          <span class="mdi search-category__icon">eco</span>
+          <span class="search-category__label">Vegetais</span>
+        </button>
+      </div>
+    </section>
+
+  </div>
+  <% } else { %>
+
+  <div class="search-results-wrap">
+    <% if (results.length > 0) { %>
+    <p class="search-results-count">
+      <strong><%= results.length %></strong> resultado<%= results.length !== 1 ? 's' : '' %> para "<%= q %>"
+    </p>
+    <div class="product-grid">
+      <% results.forEach(offer => { %>
+        <%- include('../partials/product-card', { offer }) %>
+      <% }) %>
+    </div>
+    <% } else { %>
+    <div class="search-empty">
+      <span class="mdi search-empty__icon">search_off</span>
+      <p class="search-empty__title">Sem resultados</p>
+      <p class="search-empty__text">Não encontrámos produtos para "<%= q %>". Tente outros termos.</p>
+    </div>
     <% } %>
   </div>
-</section>
+
+  <% } %>
+
+</div>
+
+<script type="module" src="/js/search.js"></script>

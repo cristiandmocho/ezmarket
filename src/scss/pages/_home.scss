@@ -175,7 +175,7 @@
   }
 
   &__empty-title {
-    font-family: 'Manrope', sans-serif;
+    font-family: "Manrope", sans-serif;
     font-size: 16px;
     font-weight: 600;
     color: var(--on-surface);
@@ -202,7 +202,9 @@
     text-decoration: none;
     transition: background $transition-fast;
 
-    &:hover { background: var(--primary); }
+    &:hover {
+      background: var(--primary);
+    }
   }
 
   &__row {
@@ -419,9 +421,12 @@
     align-items: center;
     justify-content: center;
     height: 32px;
+    width: 32px;
+    overflow: hidden;
+    border-radius: $radius-sm;
 
     img {
-      height: 28px;
+      height: 100%;
       width: auto;
       object-fit: contain;
       opacity: 0.75;

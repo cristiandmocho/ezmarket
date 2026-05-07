@@ -1,0 +1,146 @@
+<div class="profile">
+
+  <%# ── Profile card ────────────────────────────────────────────────────────── %>
+  <div class="profile__card">
+    <div class="profile__avatar-wrap">
+      <% if (avatarUrl) { %>
+      <img
+        class="profile__avatar"
+        src="<%= avatarUrl %>"
+        alt="Foto de perfil"
+        width="72"
+        height="72"
+        loading="lazy"
+        decoding="async"
+      >
+      <% } else { %>
+      <div class="profile__avatar profile__avatar--initials">
+        <%= (locals.user?.display_name || locals.user?.email || '?').charAt(0).toUpperCase() %>
+      </div>
+      <% } %>
+    </div>
+    <div class="profile__info">
+      <h1 class="profile__name"><%= locals.user?.display_name || locals.user?.email || 'Utilizador' %></h1>
+      <p class="profile__meta">Plano Standard</p>
+      <a href="#" class="profile__edit-link">Editar Perfil</a>
+    </div>
+  </div>
+
+  <%# ── Stats row ──────────────────────────────────────────────────────────── %>
+  <div class="profile__stats">
+    <div class="profile__stat profile__stat--primary">
+      <span class="profile__stat-label">Poupança Mensal</span>
+      <span class="profile__stat-value">—</span>
+      <span class="profile__stat-sub">Em breve</span>
+    </div>
+    <div class="profile__stat">
+      <span class="profile__stat-label">Melhor Loja</span>
+      <span class="profile__stat-value profile__stat-value--store">—</span>
+      <span class="profile__stat-sub">Em breve</span>
+    </div>
+  </div>
+
+  <%# ── Preferred stores ───────────────────────────────────────────────────── %>
+  <section class="profile__section">
+    <div class="profile__section-header">
+      <h2 class="profile__section-title">Lojas Preferidas</h2>
+      <button class="profile__select-all" type="button">Selecionar Todas</button>
+    </div>
+    <div class="profile__list">
+      <% supermarkets.forEach(store => {
+           const active = locals.prefs.preferredStores.includes(store.slug);
+      %>
+      <label class="profile__list-item" for="store-<%= store.slug %>">
+        <span class="profile__list-icon"><span class="mdi">storefront</span></span>
+        <span class="profile__list-label"><%= store.name %></span>
+        <div class="toggle">
+          <input
+            class="toggle__input"
+            type="checkbox"
+            role="switch"
+            id="store-<%= store.slug %>"
+            data-store="<%= store.slug %>"
+            <%= active ? 'checked' : '' %>
+          >
+          <span class="toggle__track"></span>
+        </div>
+      </label>
+      <% }) %>
+    </div>
+  </section>
+
+  <%# ── App preferences ───────────────────────────────────────────────────── %>
+  <section class="profile__section">
+    <h2 class="profile__section-title">Preferências da App</h2>
+    <div class="profile__list">
+
+      <label class="profile__list-item" for="pref-alerts">
+        <span class="profile__list-icon"><span class="mdi">notifications</span></span>
+        <span class="profile__list-text">
+          <span class="profile__list-label">Alertas de Preço</span>
+          <span class="profile__list-sub">Notificar quando favoritos baixam de preço</span>
+        </span>
+        <div class="toggle">
+          <input
+            class="toggle__input"
+            type="checkbox"
+            role="switch"
+            id="pref-alerts"
+            data-pref="price_alerts"
+            <%= locals.prefs.priceAlerts ? 'checked' : '' %>
+          >
+          <span class="toggle__track"></span>
+        </div>
+      </label>
+
+      <div class="profile__list-item profile__list-item--link">
+        <span class="profile__list-icon"><span class="mdi">currency_exchange</span></span>
+        <span class="profile__list-label">Moeda</span>
+        <span class="profile__list-value">EUR (€) ›</span>
+      </div>
+
+      <div class="profile__list-item profile__list-item--link">
+        <span class="profile__list-icon"><span class="mdi">language</span></span>
+        <span class="profile__list-label">Idioma</span>
+        <span class="profile__list-value">Português ›</span>
+      </div>
+
+    </div>
+  </section>
+
+  <%# ── Actions ────────────────────────────────────────────────────────────── %>
+  <div class="profile__actions">
+    <button type="button" class="btn btn--primary profile__report-btn">
+      Gerar Relatório Completo (PDF)
+    </button>
+    <a href="/logout" class="btn btn--ghost profile__logout-btn">
+      <span class="mdi">logout</span>
+      Terminar Sessão
+    </a>
+  </div>
+
+</div>
+
+<script type="module">
+  // Preferred stores — rebuild cookie on any toggle change
+  function saveStores() {
+    const checked = [...document.querySelectorAll('[data-store]:checked')]
+      .map(el => el.dataset.store);
+    document.cookie = `preferred_stores=${checked.join(',')};path=/;max-age=${60 * 60 * 24 * 365}`;
+  }
+
+  document.querySelectorAll('[data-store]').forEach(el => {
+    el.addEventListener('change', saveStores);
+  });
+
+  // Select all button
+  document.querySelector('.profile__select-all')?.addEventListener('click', () => {
+    document.querySelectorAll('[data-store]').forEach(el => { el.checked = true; });
+    saveStores();
+  });
+
+  // Price alerts toggle
+  document.querySelector('[data-pref="price_alerts"]')?.addEventListener('change', function () {
+    document.cookie = `price_alerts=${this.checked ? '1' : '0'};path=/;max-age=${60 * 60 * 24 * 365}`;
+  });
+</script>

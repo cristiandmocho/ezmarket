@@ -3,12 +3,15 @@ import * as homeController from '../controllers/homeController.js';
 import * as searchController from '../controllers/searchController.js';
 import * as productController from '../controllers/productController.js';
 import * as authController from '../controllers/authController.js';
+import * as profileController from '../controllers/profileController.js';
 
 const router = Router();
 
 router.get('/', homeController.index);
 router.get('/search', searchController.index);
 router.get('/product/:slug', productController.show);
+
+router.get('/perfil', profileController.show);
 
 router.get('/login', authController.loginPage);
 router.post('/login', authController.loginSubmit);

@@ -1,0 +1,292 @@
+@use '../base/variables' as *;
+
+.profile {
+  padding: $space-md $space-margin $space-xl;
+  display: flex;
+  flex-direction: column;
+  gap: $space-md;
+
+  // ── Profile card ──────────────────────────────────────────────────────────
+  &__card {
+    display: flex;
+    align-items: center;
+    gap: $space-md;
+    background: var(--surface-container-lowest);
+    border: 1px solid var(--outline-variant);
+    border-radius: $radius-md;
+    padding: $space-md;
+  }
+
+  &__avatar-wrap {
+    flex-shrink: 0;
+  }
+
+  &__avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: $radius-full;
+    object-fit: cover;
+    display: block;
+
+    &--initials {
+      background: var(--primary-container);
+      color: var(--on-primary);
+      font-family: 'Manrope', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__name {
+    font-family: 'Manrope', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--on-surface);
+    line-height: 1.2;
+  }
+
+  &__meta {
+    font-size: 13px;
+    color: var(--on-surface-variant);
+  }
+
+  &__edit-link {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--primary);
+    margin-top: 2px;
+  }
+
+  // ── Stats row ─────────────────────────────────────────────────────────────
+  &__stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $space-sm;
+  }
+
+  &__stat {
+    background: var(--surface-container-highest);
+    border-radius: $radius-md;
+    padding: $space-sm $space-md;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    &--primary {
+      background: var(--primary);
+
+      .profile__stat-label,
+      .profile__stat-value,
+      .profile__stat-sub { color: var(--on-primary); }
+    }
+  }
+
+  &__stat-label {
+    font-size: 12px;
+    color: var(--on-surface-variant);
+  }
+
+  &__stat-value {
+    font-family: 'Manrope', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--on-surface);
+    line-height: 1.1;
+
+    &--store {
+      font-size: 16px;
+      font-weight: 600;
+    }
+  }
+
+  &__stat-sub {
+    font-size: 12px;
+    color: var(--on-surface-variant);
+  }
+
+  // ── Section ───────────────────────────────────────────────────────────────
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: $space-sm;
+  }
+
+  &__section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__section-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--on-surface);
+  }
+
+  &__select-all {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--primary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  // ── List ──────────────────────────────────────────────────────────────────
+  &__list {
+    background: var(--surface-container-lowest);
+    border: 1px solid var(--outline-variant);
+    border-radius: $radius-md;
+    overflow: hidden;
+  }
+
+  &__list-item {
+    display: flex;
+    align-items: center;
+    gap: $space-sm;
+    padding: 14px $space-md;
+    border-bottom: 1px solid var(--outline-variant);
+    cursor: pointer;
+
+    &:last-child { border-bottom: none; }
+
+    &--link { cursor: default; }
+  }
+
+  &__list-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--on-surface-variant);
+    flex-shrink: 0;
+
+    .mdi { font-size: 20px; }
+  }
+
+  &__list-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  &__list-label {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--on-surface);
+  }
+
+  &__list-sub {
+    font-size: 12px;
+    color: var(--on-surface-variant);
+  }
+
+  &__list-value {
+    font-size: 14px;
+    color: var(--on-surface-variant);
+    margin-left: auto;
+  }
+
+  // ── Actions ───────────────────────────────────────────────────────────────
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: $space-sm;
+    margin-top: $space-xs;
+  }
+
+  &__report-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 14px $space-md;
+    font-size: 15px;
+    background: var(--primary);
+    color: var(--on-primary);
+    border-radius: $radius-md;
+
+    &:hover { background: var(--primary-container); }
+  }
+
+  &__logout-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 14px $space-md;
+    font-size: 15px;
+    color: var(--error);
+    border-color: var(--outline-variant);
+    border-radius: $radius-md;
+
+    &:hover { background: var(--error-container); }
+  }
+}
+
+// ── Toggle switch ─────────────────────────────────────────────────────────────
+.toggle {
+  position: relative;
+  flex-shrink: 0;
+  width: 48px;
+  height: 28px;
+  margin-left: auto;
+
+  &__input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    &:checked + .toggle__track {
+      background: var(--primary);
+
+      &::after {
+        transform: translateX(20px);
+      }
+    }
+  }
+
+  &__track {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: $radius-full;
+    background: var(--surface-container-highest);
+    border: 2px solid var(--outline-variant);
+    transition: background 0.2s, border-color 0.2s;
+    cursor: pointer;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 20px;
+      height: 20px;
+      border-radius: $radius-full;
+      background: var(--outline);
+      transition: transform 0.2s, background 0.2s;
+    }
+  }
+
+  &__input:checked + &__track {
+    background: var(--primary);
+    border-color: var(--primary);
+
+    &::after {
+      background: var(--on-primary);
+      transform: translateX(20px);
+    }
+  }
+}

@@ -61,6 +61,14 @@ $on-error:           #ffffff;
 $error-container:    #ffdad6;
 $on-error-container: #93000a;
 
+// ── Supermarket brand colours ─────────────────────────────────────────────────
+$brand-pingo-doce: #005c2f;
+$brand-continente: #e63400;
+$brand-auchan:     #c8102e;
+$brand-lidl:       #0050aa;
+$brand-aldi:       #005eb8;
+$brand-minipreco:  #ff6600;
+
 // ── CSS custom properties ─────────────────────────────────────────────────────
 :root {
   --primary:              #{$primary};

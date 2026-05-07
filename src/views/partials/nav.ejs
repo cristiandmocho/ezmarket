@@ -1,20 +1,14 @@
 <header class="nav">
-  <div class="nav__inner">
-    <a href="/" class="nav__logo">
-      <span class="nav__logo-mark">ez</span>markets
-    </a>
+  <button class="nav__hamburger" aria-label="Abrir menu">
+    <span class="mdi">menu</span>
+  </button>
 
-    <form class="nav__search" action="/search" method="get" role="search">
-      <span class="mdi nav__search-icon" aria-hidden="true">search</span>
-      <input
-        class="nav__search-input"
-        type="search"
-        name="q"
-        value="<%= typeof q !== 'undefined' ? q : '' %>"
-        placeholder="Pesquisar produtos..."
-        autocomplete="off"
-        aria-label="Pesquisar produtos"
-      >
-    </form>
+  <a href="/" class="nav__brand">Quanto Fica?</a>
+
+  <div class="nav__actions">
+    <a href="/login" class="nav__login">Login</a>
+    <button class="nav__settings" aria-label="Definições de filtros">
+      <span class="mdi">tune</span>
+    </button>
   </div>
 </header>

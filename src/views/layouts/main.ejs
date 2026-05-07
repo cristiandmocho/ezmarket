@@ -15,11 +15,12 @@
 <body>
   <%- include('../partials/nav') %>
 
-  <main class="page-content">
+  <main class="page-content <%= locals.pageClass || '' %>">
     <%- body %>
   </main>
 
   <%- include('../partials/footer') %>
+  <%- include('../partials/bottom-nav') %>
 
   <script type="module" src="/js/main.js"></script>
 </body>

@@ -1,9 +1,31 @@
-import { getDeals } from '../services/productService.js';
+import { getDeals, getSupermarkets, getPriceCount, getDefaultList, getListBasket } from '../services/productService.js';
 
 export async function index(req, res, next) {
   try {
-    const deals = await getDeals(8);
-    res.render('pages/home', { title: 'ezMarkets — Compare supermarket prices', deals });
+    const [deals, supermarkets, priceCount, list] = await Promise.all([
+      getDeals(8),
+      getSupermarkets(),
+      getPriceCount(),
+      getDefaultList(),
+    ]);
+
+    let basket = null;
+    if (list) {
+      const stores = await getListBasket(list.id);
+      if (stores) {
+        basket = { label: list.name, itemCount: Number(list.itemCount), stores };
+      }
+    }
+
+    res.render('pages/home', {
+      title: 'Quanto Fica? — Compare preços nos supermercados',
+      pageClass: 'page-home',
+      currentPage: 'home',
+      deals,
+      basket,
+      supermarkets,
+      stats: { pricesUpdated: priceCount },
+    });
   } catch (err) {
     next(err);
   }

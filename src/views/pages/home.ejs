@@ -1,30 +1,149 @@
+<%# ── Hero ────────────────────────────────────────────────────────────────── %>
 <section class="hero">
   <div class="hero__inner">
-    <h1 class="hero__headline headline-xl">Compare preços em todos os supermercados</h1>
-    <p class="hero__sub body-lg">Poupe dinheiro na sua compra semanal. Resultados em segundos.</p>
-    <form class="hero__search" action="/search" method="get" role="search">
+    <h1 class="hero__headline">Compare preços nos supermercados e poupe nas suas compras mensais.</h1>
+    <p class="hero__sub">Crie listas de compras e descubra instantaneamente onde o seu cabaz fica mais barato. Gestão financeira inteligente para a sua casa.</p>
+
+    <a href="/listas/nova" class="hero__cta btn btn--primary">Criar Lista de Compras</a>
+
+    <div class="hero__search">
       <span class="mdi hero__search-icon" aria-hidden="true">search</span>
-      <input
-        class="hero__search-input"
-        type="search"
-        name="q"
-        placeholder="Ex: leite meio-gordo, arroz agulha, frango..."
-        autocomplete="off"
-        aria-label="Pesquisar produtos"
-        autofocus
-      >
-      <button class="hero__search-btn btn btn--primary" type="submit">Pesquisar</button>
-    </form>
+      <input class="hero__search-input" type="search" name="q" placeholder="Pesquisar produtos..." autocomplete="off" aria-label="Pesquisar produtos" form="hero-search-form">
+      <form id="hero-search-form" action="/search" method="get" hidden></form>
+    </div>
+
+    <p class="hero__counter">
+      <span class="hero__counter-dot" aria-hidden="true"></span>
+      <%= stats.pricesUpdated %> PREÇOS ATUALIZADOS HOJE
+    </p>
   </div>
 </section>
 
-<section class="deals">
-  <div class="deals__inner">
-    <h2 class="deals__title headline-md">Novidades recentes</h2>
-    <div class="product-grid">
-      <% deals.forEach(offer => { %>
-        <%- include('../partials/product-card', { offer }) %>
+<%# ── Basket comparison ──────────────────────────────────────────────────── %>
+<% if (basket) { %>
+<section class="basket">
+  <div class="basket__inner">
+    <div class="basket__card">
+      <div class="basket__header">
+        <span class="basket__title"><%= basket.label %></span>
+        <span class="basket__count"><%= basket.itemCount %> artigos</span>
+      </div>
+
+      <% basket.stores.forEach(store => { %>
+      <div class="basket__row">
+        <div class="basket__store">
+          <span class="store-badge store-badge--<%= store.slug %>">
+            <img
+              src="/images/logos/<%= store.slug %>.avif"
+              alt="<%= store.name %>"
+              width="36" height="36"
+              loading="lazy"
+              decoding="async"
+              onerror="this.closest('.store-badge').classList.add('store-badge--no-logo');this.remove()"
+            >
+            <span aria-hidden="true"><%= store.initials %></span>
+          </span>
+          <span class="basket__store-name"><%= store.name %></span>
+        </div>
+        <div class="basket__price-col">
+          <span class="basket__price">€<%= store.price.toFixed(2) %></span>
+          <span class="basket__diff basket__diff--<%= store.trend %>">
+            <% if (store.trend === 'down') { %>
+            <span class="mdi" aria-hidden="true">trending_down</span>-€<%= Math.abs(store.diff).toFixed(2) %>
+            <% } else if (store.trend === 'up') { %>
+            <span class="mdi" aria-hidden="true">trending_up</span>+€<%= Math.abs(store.diff).toFixed(2) %>
+            <% } else { %>
+            &mdash; Méd.
+            <% } %>
+          </span>
+        </div>
+      </div>
       <% }) %>
     </div>
   </div>
 </section>
+<% } else { %>
+<section class="basket">
+  <div class="basket__inner">
+    <div class="basket__empty">
+      <span class="mdi basket__empty-icon" aria-hidden="true">format_list_bulleted_add</span>
+      <p class="basket__empty-title">Ainda não tem listas</p>
+      <p class="basket__empty-sub">Crie uma lista de compras para comparar os preços do seu cabaz entre supermercados.</p>
+      <a href="/listas/nova" class="basket__empty-cta">Criar Lista</a>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<%# ── Smart saving steps ─────────────────────────────────────────────────── %>
+<section class="steps">
+  <div class="steps__inner">
+    <h2 class="steps__title headline-md">Poupar em três passos</h2>
+    <div class="steps__list">
+
+      <div class="step">
+        <div class="step__icon-box"><span class="mdi" aria-hidden="true">checklist</span></div>
+        <div class="step__text">
+          <h3 class="step__label">Adicionar artigos</h3>
+          <p class="step__desc body-sm">Pesquise e adicione as suas compras habituais a uma lista digital.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step__icon-box"><span class="mdi" aria-hidden="true">compare_arrows</span></div>
+        <div class="step__text">
+          <h3 class="step__label">Comparar preços</h3>
+          <p class="step__desc body-sm">O nosso motor analisa dados em tempo real de todos os principais supermercados.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step__icon-box"><span class="mdi" aria-hidden="true">savings</span></div>
+        <div class="step__text">
+          <h3 class="step__label">Ir ao mais barato</h3>
+          <p class="step__desc body-sm">Dizemos-lhe exatamente onde ir para gastar menos dinheiro.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<%# ── Supported supermarkets ─────────────────────────────────────────────── %>
+<section class="supermarkets">
+  <div class="supermarkets__inner">
+    <p class="supermarkets__label label-sm">SUPERMERCADOS SUPORTADOS</p>
+    <div class="supermarkets__grid">
+      <% supermarkets.forEach(sm => { %>
+      <div class="supermarkets__item">
+        <img
+          src="/images/logos/<%= sm.slug %>.avif"
+          alt="<%= sm.name %>"
+          height="32"
+          loading="lazy"
+          decoding="async"
+          onerror="this.style.display='none';this.nextElementSibling.removeAttribute('hidden')"
+        >
+        <span hidden class="supermarkets__name"><%= sm.name %></span>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<%# ── Promo cards ────────────────────────────────────────────────────────── %>
+<div class="promo-cards">
+  <div class="promo-card promo-card--dark">
+    <span class="mdi promo-card__icon" aria-hidden="true">storefront</span>
+    <div class="promo-card__body">
+      <h3 class="promo-card__title">Dados locais em tempo real</h3>
+      <p class="promo-card__desc">Sincronizamos os preços das prateleiras das lojas em todos os distritos de Portugal.</p>
+    </div>
+  </div>
+
+  <div class="promo-card promo-card--blue">
+    <span class="mdi promo-card__icon" aria-hidden="true">qr_code_scanner</span>
+    <h3 class="promo-card__title">Leitura de Código de Barras</h3>
+    <p class="promo-card__desc">Digitalize em casa para verificar instantaneamente se está a pagar demasiado pelos seus favoritos.</p>
+  </div>
+</div>

@@ -1,10 +1,23 @@
 @use '../base/variables' as *;
 
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding-bottom: 64px; // bottom-nav height
+}
+
 .page-content {
+  flex: 1;
   width: 100%;
   max-width: $content-max-width;
   margin: 0 auto;
   padding: $space-md $space-margin;
+
+  &.page-home {
+    padding: 0;
+    max-width: none;
+  }
 }
 
 .product-grid {

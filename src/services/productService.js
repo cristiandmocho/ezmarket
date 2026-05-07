@@ -90,6 +90,88 @@ export async function getOfferById(id) {
   return offer;
 }
 
+export async function getSupermarkets() {
+  const key = 'supermarkets';
+  if (cache.has(key)) return cache.get(key);
+  const [rows] = await pool.query('SELECT id, name, slug FROM supermarkets ORDER BY name');
+  cache.set(key, rows);
+  return rows;
+}
+
+function formatCount(n) {
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1).replace('.', ',') + 'M';
+  if (n >= 1_000) return Math.round(n / 1_000) + 'K';
+  return n.toLocaleString('pt-PT');
+}
+
+export async function getPriceCount() {
+  const key = 'price-count';
+  if (cache.has(key)) return cache.get(key);
+  const [[row]] = await pool.query('SELECT COUNT(*) AS total FROM product_offers WHERE is_available = 1');
+  const formatted = formatCount(row.total);
+  cache.set(key, formatted);
+  return formatted;
+}
+
+function initials(name) {
+  return name.split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0, 2);
+}
+
+export async function getDefaultList() {
+  const key = 'default-list';
+  if (cache.has(key)) return cache.get(key);
+
+  const [rows] = await pool.query(`
+    SELECT sl.id, sl.name,
+           COUNT(sli.id) AS itemCount
+    FROM shopping_lists sl
+    LEFT JOIN shopping_list_items sli ON sli.list_id = sl.id
+    GROUP BY sl.id, sl.name
+    ORDER BY sl.updated_at DESC
+    LIMIT 1
+  `);
+
+  const result = rows[0] ?? null;
+  if (result) cache.set(key, result);
+  return result;
+}
+
+export async function getListBasket(listId) {
+  const key = cacheKey('basket', listId);
+  if (cache.has(key)) return cache.get(key);
+
+  const [rows] = await pool.query(`
+    SELECT s.id AS supermarket_id, s.name, s.slug,
+           SUM(cheapest.price * sli.quantity) AS total
+    FROM shopping_list_items sli
+    JOIN (
+      SELECT po.product_id, po.supermarket_id, MIN(po.price) AS price
+      FROM product_offers po
+      WHERE po.is_available = 1
+      GROUP BY po.product_id, po.supermarket_id
+    ) cheapest ON cheapest.product_id = sli.product_id
+    JOIN supermarkets s ON s.id = cheapest.supermarket_id
+    WHERE sli.list_id = ?
+    GROUP BY s.id, s.name, s.slug
+    ORDER BY total ASC
+  `, [listId]);
+
+  if (!rows.length) return null;
+
+  const totals = rows.map(r => Number(r.total));
+  const avg = totals.reduce((a, b) => a + b, 0) / totals.length;
+
+  const stores = rows.map(r => {
+    const price = Number(r.total);
+    const diff = price - avg;
+    const trend = diff < -0.5 ? 'down' : diff > 0.5 ? 'up' : 'avg';
+    return { name: r.name, slug: r.slug, initials: initials(r.name), price, diff, trend };
+  });
+
+  cache.set(key, stores);
+  return stores;
+}
+
 export async function getPriceHistory(offerId, days = 90) {
   const key = cacheKey('history', offerId, days);
   if (cache.has(key)) return cache.get(key);

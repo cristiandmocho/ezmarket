@@ -74,6 +74,23 @@ CREATE TABLE product_price_history (
   FOREIGN KEY (product_offer_id) REFERENCES product_offers(id)
 );
 
+CREATE TABLE IF NOT EXISTS shopping_lists (
+  id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name       VARCHAR(120) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS shopping_list_items (
+  id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  list_id    INT UNSIGNED NOT NULL,
+  product_id BIGINT UNSIGNED NOT NULL,
+  quantity   SMALLINT UNSIGNED NOT NULL DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (list_id)    REFERENCES shopping_lists(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
 INSERT INTO supermarkets (name, base_url, slug) VALUES
   ('Continente', 'https://www.continente.pt', 'continente'),
   ('Pingo Doce',  'https://www.pingodoce.pt',  'pingo-doce'),

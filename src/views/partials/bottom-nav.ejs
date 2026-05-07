@@ -1,0 +1,18 @@
+<nav class="bottom-nav" aria-label="Navegação principal">
+  <a href="/" class="bottom-nav__item<%= locals.currentPage === 'home'    ? ' bottom-nav__item--active' : '' %>">
+    <span class="mdi bottom-nav__icon">home</span>
+    <span class="bottom-nav__label">Início</span>
+  </a>
+  <a href="/listas" class="bottom-nav__item<%= locals.currentPage === 'lists'   ? ' bottom-nav__item--active' : '' %>">
+    <span class="mdi bottom-nav__icon">checklist</span>
+    <span class="bottom-nav__label">Listas</span>
+  </a>
+  <a href="/search" class="bottom-nav__item<%= locals.currentPage === 'search'  ? ' bottom-nav__item--active' : '' %>">
+    <span class="mdi bottom-nav__icon">search</span>
+    <span class="bottom-nav__label">Pesquisar</span>
+  </a>
+  <a href="/perfil" class="bottom-nav__item<%= locals.currentPage === 'profile' ? ' bottom-nav__item--active' : '' %>">
+    <span class="mdi bottom-nav__icon">person</span>
+    <span class="bottom-nav__label">Perfil</span>
+  </a>
+</nav>

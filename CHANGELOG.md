@@ -5,6 +5,27 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.12.0] — 2026-05-07
+
+### Added
+
+- User profile page at `GET /perfil` (`profileController.show`); unauthenticated users redirected to `/login`
+- Profile card: Auth0 avatar (with initials fallback), display name, plan label, "Editar Perfil" link
+- Stats row: Poupança Mensal + Melhor Loja cards (placeholder until savings tracking is built)
+- Preferred stores section: toggles per supermarket (DB-driven list), state persisted in `preferred_stores` cookie
+- App preferences section: price alerts toggle (`price_alerts` cookie), static currency + language rows
+- "Gerar Relatório Completo (PDF)" CTA button (stub)
+- Logout button linking to `/logout`
+- `.toggle` switch component in `_profile.scss` (reusable)
+- Extended `preferences` middleware: `prefs.preferredStores` (string[]) and `prefs.priceAlerts` (boolean) from cookies
+
+### Changed
+
+- Nav header background changed from `surface-container-lowest` to `var(--primary)`; all nav text/icons updated to `var(--on-primary)`
+- Version bump method: use `npm version [major|minor|patch]` going forward
+
+---
+
 ## [0.9.0] — 2026-05-07
 
 ### Added

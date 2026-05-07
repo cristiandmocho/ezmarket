@@ -27,6 +27,7 @@ Pages (in build order):
 | Page | Route | Status |
 | --- | --- | --- |
 | Home / landing | `/` | ✅ Done |
+| User profile | `/perfil` | ✅ Done |
 | Search results | `/search?q=` | 🔲 Next |
 | Product detail | `/product/:slug` | 🔲 Next |
 | Shopping list dashboard | `/listas` | 🔲 Phase 2 |
@@ -56,8 +57,11 @@ Pages (in build order):
 - ✅ Auth0 via `express-openid-connect`; `syncUser` middleware upserts Auth0 profile into `users` table; `req.user` / `res.locals.user` available on every request; `/login` and `/logout` handled automatically
 - ✅ Multi-tenant schema — every user-owned table has a `user_id` FK; product catalog is global
 - ✅ Home page (PT-PT): hero + search, basket comparison card (DB-driven, shows empty-state for unauthenticated), "Poupar em três passos", supermarkets strip (DB-driven), promo cards
-- ✅ Mobile nav: top bar (hamburger | brand | login/logout + settings) + fixed bottom nav with active state from `currentPage`
-- ✅ SCSS design system: palette dual-tokens, 8px grid, Manrope + Inter, MDI icons, BEM, `_home.scss`, `_nav.scss`, `_bottom-nav.scss`, `_footer.scss`, `_grid.scss`
+- ✅ Mobile nav: top bar (primary green background, hamburger | brand | login/logout + settings) + fixed bottom nav with active state from `currentPage`
+- ✅ User profile page (`/perfil`): avatar + initials fallback, preferred stores toggles (cookie-persisted), app preferences, logout
+- ✅ `.toggle` switch component (in `_profile.scss`) — reusable checkbox-as-switch
+- ✅ `prefs.preferredStores` (string[]) and `prefs.priceAlerts` (boolean) in preferences middleware
+- ✅ SCSS design system: palette dual-tokens, 8px grid, Manrope + Inter, MDI icons, BEM, `_home.scss`, `_nav.scss`, `_bottom-nav.scss`, `_footer.scss`, `_grid.scss`, `_profile.scss`
 - ✅ LRU cache (5-min TTL) on all DB queries in `productService.js`
 - ✅ `compression` middleware (gzip/brotli)
 
@@ -109,7 +113,8 @@ Build pages in this order as mockups arrive (user provides one screenshot at a t
 ## Personal / session instructions
 
 - **Always use the Bash tool** — never PowerShell; user is on Bash
-- **Bump `package.json` version on every push** — minor bump (`0.x.0`) for features, patch (`0.0.x`) for fixes; include the bump in the same commit
+- **Bump `package.json` version on every push** — run `npm version minor` for features, `npm version patch` for fixes; include the bump in the same commit
+- **Update CHANGELOG.md and CLAUDE.md after every push** — log what changed in the changelog; update "What's built" and page table in CLAUDE.md
 - **Build views image by image** — user provides one mockup screenshot at a time; implement it fully before moving on
 - **All UI copy is PT-PT Portuguese** — translate any placeholder text
 - **Run `npm run db:init` after any schema change** — it drops and recreates the full DB; scrapers must re-run to repopulate product data

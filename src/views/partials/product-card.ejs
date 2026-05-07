@@ -18,10 +18,10 @@
       <% } %>
       <h3 class="product-card__name body-md"><%= offer.listing_name %></h3>
       <% if (offer.unit_price && offer.unit) { %>
-        <p class="product-card__unit label-sm"><%= offer.unit_price.toFixed(2) %>€/<%= offer.unit %></p>
+        <p class="product-card__unit label-sm"><%= Number(offer.unit_price).toFixed(2) %>€/<%= offer.unit %></p>
       <% } %>
       <div class="product-card__footer">
-        <span class="product-card__price price-display"><%= offer.price.toFixed(2) %>€</span>
+        <span class="product-card__price price-display"><%= Number(offer.price).toFixed(2) %>€</span>
         <span class="product-card__store label-sm"><%= offer.supermarket_name %></span>
       </div>
     </div>

@@ -159,7 +159,7 @@ if (recentClear) recentClear.addEventListener('click', clearRecents);
 
 // Trending + category buttons navigate directly
 document.querySelectorAll('[data-q]').forEach(btn => {
-  if (btn === clearBtn) return;
+  if (btn === clearBtn || btn.id === 'load-more-btn') return;
   btn.addEventListener('click', () => navigate(btn.dataset.q));
 });
 
@@ -176,6 +176,70 @@ form.addEventListener('submit', () => {
   const q = input.value.trim();
   if (q) saveRecent(q);
 });
+
+// ── Load more ────────────────────────────────────────────────────────────────
+
+const loadMoreBtn   = document.getElementById('load-more-btn');
+const loadMoreWrap  = document.getElementById('load-more-wrap');
+const productGrid   = document.getElementById('product-grid');
+const resultsCount  = document.querySelector('.search-results-count strong');
+
+function renderCard(offer) {
+  const img = offer.image_url
+    ? `<img class="product-card__image" src="${escHtml(offer.image_url)}" alt="${escHtml(offer.listing_name)}" width="280" height="280" loading="lazy" decoding="async" onerror="this.src='/images/placeholder.svg'">`
+    : `<img class="product-card__image" src="/images/placeholder.svg" alt="${escHtml(offer.listing_name)}" width="280" height="280" loading="lazy" decoding="async">`;
+  const brand = offer.brand ? `<p class="product-card__brand body-sm">${escHtml(offer.brand)}</p>` : '';
+  const unit  = (offer.unit_price && offer.unit)
+    ? `<p class="product-card__unit label-sm">${Number(offer.unit_price).toFixed(2)}€/${escHtml(offer.unit)}</p>`
+    : '';
+  return `<article class="product-card">
+    <a href="/product/${offer.id}" class="product-card__link">
+      <div class="product-card__image-wrap">${img}</div>
+      <div class="product-card__body">
+        ${brand}
+        <h3 class="product-card__name body-md">${escHtml(offer.listing_name)}</h3>
+        ${unit}
+        <div class="product-card__footer">
+          <span class="product-card__price price-display">${Number(offer.price).toFixed(2)}€</span>
+          <span class="product-card__store label-sm">${escHtml(offer.supermarket_name)}</span>
+        </div>
+      </div>
+    </a>
+  </article>`;
+}
+
+if (loadMoreBtn) {
+  loadMoreBtn.addEventListener('click', async () => {
+    const { q, supermarket, offset } = loadMoreBtn.dataset;
+    loadMoreBtn.disabled = true;
+    loadMoreBtn.textContent = 'A carregar…';
+
+    try {
+      const params = new URLSearchParams({ q, limit: 24, offset });
+      if (supermarket) params.set('supermarket', supermarket);
+      const res = await fetch(`/api/search?${params}`);
+      if (!res.ok) throw new Error();
+      const { results, hasMore } = await res.json();
+
+      productGrid.insertAdjacentHTML('beforeend', results.map(renderCard).join(''));
+      loadMoreBtn.dataset.offset = parseInt(offset) + results.length;
+
+      if (resultsCount) {
+        const total = productGrid.querySelectorAll('.product-card').length;
+        resultsCount.textContent = total;
+      }
+
+      if (!hasMore || results.length === 0) loadMoreWrap.remove();
+      else {
+        loadMoreBtn.disabled = false;
+        loadMoreBtn.innerHTML = '<span class="mdi">expand_more</span> Ver mais';
+      }
+    } catch {
+      loadMoreBtn.disabled = false;
+      loadMoreBtn.innerHTML = '<span class="mdi">expand_more</span> Ver mais';
+    }
+  });
+}
 
 // Init
 renderRecents();

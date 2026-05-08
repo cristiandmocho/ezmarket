@@ -7,28 +7,46 @@ function cacheKey(...parts) {
   return parts.join(':');
 }
 
+function castOffer(row) {
+  return {
+    ...row,
+    price: Number(row.price),
+    unit_price: row.unit_price != null ? Number(row.unit_price) : null,
+    price_per_base: row.price_per_base != null ? Number(row.price_per_base) : null,
+  };
+}
+
+export function buildSearchLike(q) {
+  const normalized = q.split(' ').map(w => w.trim()).filter(Boolean).join('%');
+  return { startLike: `${normalized}%`, containsLike: `%${normalized}%` };
+}
+
 export async function searchProducts({ q, supermarket = '', limit = 24, offset = 0 }) {
   const key = cacheKey('search', q, supermarket, limit, offset);
-  if (cache.has(key)) return cache.get(key);
 
-  const like = `%${q}%`;
-  const params = [like, like, limit, offset];
-  let where = '(po.listing_name LIKE ? OR po.brand LIKE ?)';
-  if (supermarket) {
-    where += ' AND s.slug = ?';
-    params.splice(2, 0, supermarket);
-  }
+  if (cache.has(key))
+    return cache.get(key);
+
+  const { startLike, containsLike } = buildSearchLike(q);
+  const supermarketClause = supermarket ? ' AND s.slug = ?' : '';
+
+  const subParams = (like) => [like, like, like, ...(supermarket ? [supermarket] : []), limit + offset];
+
+  const sub = `
+    SELECT po.id, po.listing_name, po.brand, po.price, po.unit_price, po.unit,
+           po.price_per_base, po.base_unit, po.image_url, po.product_url,
+           s.name AS supermarket_name, s.slug AS supermarket_slug
+    FROM product_offers po
+    JOIN supermarkets s ON s.id = po.supermarket_id
+    JOIN products p ON p.id = po.product_id
+    WHERE (po.listing_name LIKE ? OR po.brand LIKE ? OR p.normalised_name LIKE ?)
+      ${supermarketClause} AND po.is_available = 1
+    ORDER BY po.listing_name
+    LIMIT ?`;
 
   const [rows] = await pool.query(
-    `SELECT po.id, po.listing_name, po.brand, po.price, po.unit_price, po.unit,
-            po.price_per_base, po.base_unit, po.image_url, po.product_url,
-            s.name AS supermarket_name, s.slug AS supermarket_slug
-     FROM product_offers po
-     JOIN supermarkets s ON s.id = po.supermarket_id
-     WHERE ${where} AND po.is_available = 1
-     ORDER BY po.listing_name
-     LIMIT ? OFFSET ?`,
-    params
+    `(${sub}) UNION (${sub}) LIMIT ? OFFSET ?`,
+    [...subParams(startLike), ...subParams(containsLike), limit, offset]
   );
 
   cache.set(key, rows);
@@ -68,7 +86,7 @@ export async function getOfferBySlug(slug) {
     [`%${slug}%`]
   );
 
-  const offer = rows[0] ?? null;
+  const offer = rows[0] ? castOffer(rows[0]) : null;
   if (offer) cache.set(key, offer);
   return offer;
 }
@@ -85,7 +103,7 @@ export async function getOfferById(id) {
     [id]
   );
 
-  const offer = rows[0] ?? null;
+  const offer = rows[0] ? castOffer(rows[0]) : null;
   if (offer) cache.set(key, offer);
   return offer;
 }

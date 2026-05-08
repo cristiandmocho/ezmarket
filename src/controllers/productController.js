@@ -2,7 +2,10 @@ import { getOfferBySlug, getOfferById, getPriceHistory } from '../services/produ
 
 export async function show(req, res, next) {
   try {
-    const offer = await getOfferBySlug(req.params.slug);
+    const { slug } = req.params;
+    const offer = /^\d+$/.test(slug)
+      ? await getOfferById(slug)
+      : await getOfferBySlug(slug);
     if (!offer) return res.status(404).render('pages/404', { title: 'Not found — ezMarkets' });
     const history = await getPriceHistory(offer.id, 90);
     res.render('pages/product', { title: `${offer.listing_name} — ezMarkets`, offer, history });

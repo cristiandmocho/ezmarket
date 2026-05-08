@@ -351,3 +351,17 @@
     max-width: 280px;
   }
 }
+
+
+// ── Load more ───────────────────────────────────────────────────────────────
+
+.search-load-more {
+  display: flex;
+  justify-content: center;
+  padding: $space-md 0 $space-lg;
+
+  &__btn {
+    min-width: 160px;
+    justify-content: center;
+  }
+}

@@ -85,11 +85,25 @@
     <p class="search-results-count">
       <strong><%= results.length %></strong> resultado<%= results.length !== 1 ? 's' : '' %> para "<%= q %>"
     </p>
-    <div class="product-grid">
+    <div class="product-grid" id="product-grid">
       <% results.forEach(offer => { %>
         <%- include('../partials/product-card', { offer }) %>
       <% }) %>
     </div>
+    <% if (hasMore) { %>
+    <div class="search-load-more" id="load-more-wrap">
+      <button
+        class="btn btn--ghost search-load-more__btn"
+        id="load-more-btn"
+        data-q="<%= q %>"
+        data-supermarket="<%= supermarket %>"
+        data-offset="<%= nextOffset %>"
+      >
+        <span class="mdi">expand_more</span>
+        Ver mais
+      </button>
+    </div>
+    <% } %>
     <% } else { %>
     <div class="search-empty">
       <span class="mdi search-empty__icon">search_off</span>

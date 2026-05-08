@@ -1,16 +1,20 @@
 import { searchProducts, getAutocomplete } from '../services/productService.js';
 
+const PAGE_SIZE = 24;
+
 export async function index(req, res, next) {
   try {
-    const { q: rawQ = '', supermarket = '', page = 1 } = req.query;
+    const { q: rawQ = '', supermarket = '' } = req.query;
     const q = rawQ.trim();
-    const results = q ? await searchProducts({ q, supermarket, limit: 24, offset: (page - 1) * 24 }) : [];
+    const results = q ? await searchProducts({ q, supermarket, limit: PAGE_SIZE, offset: 0 }) : [];
     res.render('pages/search', {
       title: q ? `"${q}" — Quanto Fica?` : 'Pesquisar — Quanto Fica?',
       currentPage: 'search',
       q,
       supermarket,
       results,
+      hasMore: results.length === PAGE_SIZE,
+      nextOffset: PAGE_SIZE,
     });
   } catch (err) {
     next(err);
@@ -19,11 +23,13 @@ export async function index(req, res, next) {
 
 export async function apiSearch(req, res, next) {
   try {
-    const { q: rawQ = '', supermarket = '', limit = 8 } = req.query;
+    const { q: rawQ = '', supermarket = '', limit = 8, offset = 0 } = req.query;
     const q = rawQ.trim();
     if (!q) return res.json({ results: [] });
-    const results = await searchProducts({ q, supermarket, limit: Math.min(parseInt(limit), 50), offset: 0 });
-    res.json({ results });
+    const parsedLimit = Math.min(parseInt(limit), 50);
+    const parsedOffset = Math.max(parseInt(offset), 0);
+    const results = await searchProducts({ q, supermarket, limit: parsedLimit, offset: parsedOffset });
+    res.json({ results, hasMore: results.length === parsedLimit });
   } catch (err) {
     next(err);
   }

@@ -36,11 +36,35 @@ export class ContinenteScraper extends BaseScraper {
   }
 
   async #loadAllProducts(page) {
-    const loadMoreBtn = page.locator('.js-show-more-products');
+    // "35 de 5082 produtos" → { shown: 35, total: 5082 }
+    const getCounters = () => page.evaluate(() => {
+      const text = document.querySelector('.search-results-products-counter')?.innerText ?? '';
+      const m = text.match(/(\d[\d\s]*)\s+de\s+([\d\s]+)/);
+      if (!m) return { shown: 0, total: 0 };
+      const parse = s => parseInt(s.replace(/\s/g, ''), 10);
+      return { shown: parse(m[1]), total: parse(m[2]) };
+    });
+
+    const { total } = await getCounters();
+    if (!total) return;
+
     while (true) {
-      const visible = await loadMoreBtn.isVisible({ timeout: 2000 }).catch(() => false);
-      if (!visible) break;
-      await loadMoreBtn.click();
+      const { shown } = await getCounters();
+      if (shown >= total) break;
+
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await page.waitForTimeout(1000);
+
+      const clicked = await page.evaluate(() => {
+        const btn = document.querySelector('.js-show-more-products')
+          ?? [...document.querySelectorAll('button, a, [role="button"]')]
+               .find(el => /ver mais produtos/i.test(el.textContent?.trim()));
+        if (!btn) return false;
+        btn.click();
+        return true;
+      });
+      if (!clicked) break;
+
       await page.waitForLoadState('networkidle');
     }
   }

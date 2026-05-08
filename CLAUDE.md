@@ -64,6 +64,9 @@ Pages (in build order):
 - ✅ SCSS design system: palette dual-tokens, 8px grid, Manrope + Inter, MDI icons, BEM, `_home.scss`, `_nav.scss`, `_bottom-nav.scss`, `_footer.scss`, `_grid.scss`, `_profile.scss`
 - ✅ LRU cache (5-min TTL) on all DB queries in `productService.js`
 - ✅ `compression` middleware (gzip/brotli)
+- ✅ Product deduplication pipeline: `src/jobs/normalise.js` (pure utils), `src/jobs/matchProducts.js` (Union-Find + trigram similarity ≥ 0.85), `src/db/migrate-canonical.js` (idempotent migration); `products` table gains `normalised_name`, `pack_size`, `idx_norm`
+- ✅ Jest test suite: `src/__tests__/normalise.test.js` covering normaliseText, normaliseProductName, extractPackSize, trigramSimilarity
+- ✅ Scraper unit price normalisation: `normalizeUnitPrice()` in `offer.js` stores `price_per_base` (base g/ml) + `base_unit`
 
 ### Key service functions (`src/services/productService.js`)
 

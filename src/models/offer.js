@@ -22,7 +22,7 @@ function normalizeUnitPrice(unitPrice, unit) {
 export async function upsertOffer(offer) {
   const {
     supermarket_id, category_id, external_id,
-    name, brand, barcode,
+    name, brand,
     price, unit_price, unit,
     image_url, product_url,
   } = offer;
@@ -40,8 +40,8 @@ export async function upsertOffer(offer) {
     productId = existing[0].product_id;
   } else {
     const [result] = await pool.execute(
-      'INSERT INTO products (name, brand, barcode) VALUES (?, ?, ?)',
-      [name, brand ?? null, barcode ?? null],
+      'INSERT INTO products (name, brand) VALUES (?, ?)',
+      [name, brand ?? null],
     );
     productId = result.insertId;
   }

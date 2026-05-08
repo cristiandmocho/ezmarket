@@ -5,6 +5,27 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.15.0] — 2026-05-08
+
+### Added
+
+- Product deduplication pipeline: `src/jobs/matchProducts.js` — Union-Find + trigram similarity (≥ 0.85) to identify canonical products across supermarkets; redirects `product_offers` and `shopping_list_items` FKs, deletes orphaned duplicates
+- `src/jobs/normalise.js` — pure utility functions: `normaliseText`, `normaliseProductName`, `extractPackSize`, `trigrams`, `trigramSimilarity`
+- `src/db/migrate-canonical.js` — idempotent migration adding `normalised_name` and `pack_size` columns + `idx_norm` index to `products` table
+- `src/__tests__/normalise.test.js` — Jest unit tests for all normalisation and similarity functions
+- `npm run db:migrate` script — runs the canonical migration
+- `npm run match` script — runs the product matching job
+- `npm test` — Jest via `--experimental-vm-modules` (ES module support)
+
+### Changed
+
+- `src/models/offer.js` — `normalizeUnitPrice()` converts scraped unit prices to base units (g / ml) and stores `price_per_base` + `base_unit`
+- `src/db/schema.sql` — `products` table gains `normalised_name VARCHAR(255)`, `pack_size VARCHAR(30)`, and `idx_norm` index
+- All scrapers: improved category hierarchy extraction (3-level GTM data on Auchan, GA impressions on Continente, virtual-scroll dedup on Lidl, DOM-snapshot debug logging on Pingo Doce)
+- `jest` added as devDependency
+
+---
+
 ## [0.12.0] — 2026-05-07
 
 ### Added

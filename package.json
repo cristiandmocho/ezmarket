@@ -1,6 +1,6 @@
 {
   "name": "ezmarkets",
-  "version": "0.14.2",
+  "version": "0.15.0",
   "description": "Supermarket product scraper and price comparison engine",
   "main": "src/index.js",
   "type": "module",
@@ -9,13 +9,23 @@
     "build:css": "sass src/scss/main.scss src/public/css/main.css --style=compressed --no-source-map",
     "watch:css": "sass --watch --no-source-map src/scss/main.scss:src/public/css/main.css",
     "db:init": "node src/db/init.js",
+    "db:migrate": "node src/db/migrate-canonical.js",
     "scrape": "node src/index.js",
-    "test": "node --experimental-vm-modules node_modules/.bin/jest"
+    "match": "node --env-file=.env src/jobs/matchProducts.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "keywords": [],
   "author": "Cristian Mocho",
   "license": "ISC",
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {}
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
   "dependencies": {
+    "chalk": "^5.6.2",
     "compression": "^1.8.1",
     "dotenv": "^17.4.2",
     "ejs": "^5.0.2",

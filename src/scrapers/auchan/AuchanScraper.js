@@ -55,6 +55,7 @@ export class AuchanScraper extends BaseScraper {
   async scrapeCategory(page, url) {
     await page.goto(url, { waitUntil: 'networkidle' });
     await this.#dismissCookieBanner(page);
+    await this.#scrollToLoadAll(page);
     return this.#extractProducts(page);
   }
 
@@ -63,6 +64,23 @@ export class AuchanScraper extends BaseScraper {
     if (await btn.isVisible({ timeout: 3000 }).catch(() => false)) {
       await btn.click();
       await page.waitForLoadState('networkidle');
+    }
+  }
+
+  async #scrollToLoadAll(page) {
+    let previousCount = 0;
+    let stableRounds = 0;
+    while (true) {
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await page.waitForTimeout(3000);
+      const count = await page.locator('.product-tile.auc-product-tile').count();
+      if (count === previousCount) {
+        stableRounds++;
+        if (stableRounds >= 2) break; // two consecutive stable rounds = done
+      } else {
+        stableRounds = 0;
+      }
+      previousCount = count;
     }
   }
 

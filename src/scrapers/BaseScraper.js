@@ -1,6 +1,10 @@
 export class BaseScraper {
+  constructor() { this.debug = false; }
+
   getName()  { throw new Error(`${this.constructor.name} must implement getName()`); }
   getSlug()  { throw new Error(`${this.constructor.name} must implement getSlug()`); }
+
+  log(...args) { if (this.debug) console.log(...args); }
 
   /**
    * Return the list of category URLs to scrape.

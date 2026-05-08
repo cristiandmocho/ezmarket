@@ -27,14 +27,15 @@ CREATE TABLE categories (
   FOREIGN KEY (parent_id)      REFERENCES categories(id)
 );
 
--- Canonical real-world products (1:1 with offers for now; a future matching job can merge rows)
+-- Canonical real-world products; matchProducts job merges same-product rows across markets
 CREATE TABLE products (
-  id         BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  name       VARCHAR(255) NOT NULL,
-  brand      VARCHAR(100) NULL,
-  barcode    VARCHAR(50)  NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY uq_barcode (barcode)
+  id              BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name            VARCHAR(255) NOT NULL,
+  brand           VARCHAR(100) NULL,
+  normalised_name VARCHAR(255) NULL,
+  pack_size       VARCHAR(30)  NULL,
+  created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_norm (normalised_name, brand, pack_size)
 );
 
 -- Supermarket-specific listings keyed on (supermarket_id, external_id)

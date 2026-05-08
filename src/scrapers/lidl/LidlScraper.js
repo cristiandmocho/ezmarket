@@ -51,8 +51,7 @@ export class LidlScraper extends BaseScraper {
     await this.#dismissCookieBanner(page);
     await page.waitForSelector('[data-grid-data]', { timeout: 15000 }).catch(() => {});
     await page.waitForTimeout(1000);
-    await this.#loadAllProducts(page);
-    return this.#extractProducts(page);
+    return this.#collectAllProducts(page);
   }
 
   async #dismissCookieBanner(page) {
@@ -63,13 +62,47 @@ export class LidlScraper extends BaseScraper {
     }
   }
 
-  async #loadAllProducts(page) {
-    const btn = page.locator('.s-load-more__button');
-    while (await btn.isVisible({ timeout: 2000 }).catch(() => false)) {
-      await btn.scrollIntoViewIfNeeded();
-      await btn.click();
+  async #collectAllProducts(page) {
+    // Phase 1: click through all "Mais produtos" batches
+    while (true) {
+      const batchesBefore = await page.locator('.s-product-batch').count();
+      if (await page.locator('.s-load-more__button').count() === 0) break;
+
+      await page.evaluate(() => {
+        const btn = document.querySelector('.s-load-more__button');
+        btn?.scrollIntoView({ behavior: 'instant', block: 'center' });
+        btn?.click();
+      });
+
+      await page.waitForFunction(
+        n => document.querySelectorAll('.s-product-batch').length > n,
+        batchesBefore,
+        { timeout: 10000 },
+      ).catch(() => {});
       await page.waitForLoadState('networkidle');
     }
+
+    // Phase 2: Lidl virtualizes data-grid-data per viewport window — scroll in steps
+    //          and collect globally at each stop; Map deduplicates across passes.
+    const allById = new Map();
+    const collect = async () => {
+      const products = await this.#extractProducts(page);
+      for (const p of products) allById.set(p.external_id, p);
+    };
+
+    const totalHeight = await page.evaluate(() => document.body.scrollHeight);
+    const viewportHeight = page.viewportSize()?.height ?? 900;
+    const stepSize = viewportHeight * 0.5;
+    const steps = Math.ceil(totalHeight / stepSize);
+
+    for (let i = 0; i <= steps; i++) {
+      const y = Math.min(i * stepSize, totalHeight);
+      await page.evaluate(pos => window.scrollTo(0, pos), y);
+      await page.waitForTimeout(600);
+      await collect();
+    }
+
+    return [...allById.values()];
   }
 
   async #extractProducts(page) {

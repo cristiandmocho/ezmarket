@@ -1,3 +1,4 @@
 node_modules/
 .env
 .claude/
+src/scrapers/**/debug-browser.js

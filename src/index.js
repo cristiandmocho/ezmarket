@@ -76,7 +76,7 @@ console.log(
 console.log(DIVIDER);
 
 // ── Main scrape loop ──────────────────────────────────────────────────────────
-const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({ headless: !debugMode });
 const startAll = Date.now();
 const summary = [];
 

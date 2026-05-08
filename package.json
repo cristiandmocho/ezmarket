@@ -1,6 +1,6 @@
 {
   "name": "ezmarkets",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "description": "Supermarket product scraper and price comparison engine",
   "main": "src/index.js",
   "type": "module",

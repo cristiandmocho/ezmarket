@@ -21,6 +21,26 @@
     </form>
 
     <ul class="search-autocomplete" id="search-autocomplete" role="listbox" aria-label="Sugestões" hidden></ul>
+
+    <% if (q && results.length > 0) { %>
+    <div class="search-meta">
+      <p class="search-results-count">
+        <strong><%= results.length %></strong> resultado<%= results.length !== 1 ? 's' : '' %> para "<%= q %>"
+      </p>
+      <div class="search-sort">
+        <label for="search-sort-select" class="search-sort__label">
+          <span class="mdi">sort</span>
+        </label>
+        <select id="search-sort-select" class="search-sort__select" aria-label="Ordenar resultados">
+          <option value="relevance"  <%= sort === 'relevance'  ? 'selected' : '' %>>Relevância</option>
+          <option value="price_asc"  <%= sort === 'price_asc'  ? 'selected' : '' %>>Preço ↑</option>
+          <option value="price_desc" <%= sort === 'price_desc' ? 'selected' : '' %>>Preço ↓</option>
+          <option value="name_asc"   <%= sort === 'name_asc'   ? 'selected' : '' %>>Nome A→Z</option>
+          <option value="name_desc"  <%= sort === 'name_desc'  ? 'selected' : '' %>>Nome Z→A</option>
+        </select>
+      </div>
+    </div>
+    <% } %>
   </div>
 
   <% if (!q) { %>
@@ -82,9 +102,6 @@
 
   <div class="search-results-wrap">
     <% if (results.length > 0) { %>
-    <p class="search-results-count">
-      <strong><%= results.length %></strong> resultado<%= results.length !== 1 ? 's' : '' %> para "<%= q %>"
-    </p>
     <div class="product-grid" id="product-grid">
       <% results.forEach(offer => { %>
         <%- include('../partials/product-card', { offer }) %>
@@ -97,6 +114,7 @@
         id="load-more-btn"
         data-q="<%= q %>"
         data-supermarket="<%= supermarket %>"
+        data-sort="<%= sort %>"
         data-offset="<%= nextOffset %>"
       >
         <span class="mdi">expand_more</span>

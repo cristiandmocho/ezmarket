@@ -10,8 +10,18 @@
 // ── Search bar ──────────────────────────────────────────────────────────────
 
 .search-bar-wrap {
-  position: relative;
-  padding: $space-sm $space-margin 0;
+  position: sticky;
+  top: 52px;
+  z-index: 100;
+  background: var(--background);
+  padding: $space-sm $space-margin $space-sm;
+  border-bottom: 1px solid transparent;
+  transition: border-color $transition-fast, box-shadow $transition-fast;
+
+  &.is-stuck {
+    border-bottom-color: var(--outline-variant);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
 }
 
 .search-bar {
@@ -116,20 +126,6 @@
     flex-shrink: 0;
   }
 
-  &__img-placeholder {
-    width: 40px;
-    height: 40px;
-    border-radius: $radius-sm;
-    background: var(--surface-container);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    color: var(--on-surface-variant);
-
-    .mdi { font-size: 20px; line-height: 1; }
-  }
-
   &__text { flex: 1; min-width: 0; }
 
   &__name {
@@ -153,6 +149,49 @@
     font-weight: 700;
     color: var(--primary);
     flex-shrink: 0;
+  }
+}
+
+// ── Results meta row (count + sort) ─────────────────────────────────────────
+
+.search-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: $space-sm;
+}
+
+.search-results-count {
+  font-size: 13px;
+  color: var(--on-surface-variant);
+  margin: 0;
+
+  strong { font-weight: 600; color: var(--on-surface); }
+}
+
+.search-sort {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  &__label {
+    color: var(--on-surface-variant);
+    line-height: 1;
+    .mdi { font-size: 18px; }
+  }
+
+  &__select {
+    border: 1px solid var(--outline-variant);
+    border-radius: $radius-sm;
+    background: var(--surface-container-lowest);
+    color: var(--on-surface);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 4px 6px;
+    cursor: pointer;
+    outline: none;
+
+    &:focus { border-color: var(--secondary); }
   }
 }
 
@@ -315,12 +354,6 @@
 
 .search-results-wrap {
   padding: $space-sm $space-margin 0;
-}
-
-.search-results-count {
-  font-size: 14px;
-  color: var(--on-surface-variant);
-  margin-bottom: $space-sm;
 }
 
 .search-empty {

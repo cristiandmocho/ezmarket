@@ -63,9 +63,7 @@ function showDropdown(items) {
   activeIdx = -1;
 
   dropdown.innerHTML = items.map((item, i) => {
-    const img = item.image_url
-      ? `<img class="search-autocomplete-item__img" src="${escHtml(item.image_url)}" alt="" width="40" height="40" loading="lazy" decoding="async" onerror="this.replaceWith(mkPlaceholder())">`
-      : `<span class="search-autocomplete-item__img-placeholder"><span class="mdi">grocery</span></span>`;
+    const img = `<img class="search-autocomplete-item__img" src="${item.image_url ? escHtml(item.image_url) : '/images/placeholder.svg'}" alt="" width="40" height="40" loading="lazy" decoding="async" onerror="this.src='/images/placeholder.svg'">`;
     const price = item.min_price ? `<span class="search-autocomplete-item__price">${EUR.format(item.min_price)}</span>` : '';
     const brand = item.brand ? `<span class="search-autocomplete-item__brand">${escHtml(item.brand)}</span>` : '';
     return `<li class="search-autocomplete-item" role="option" aria-selected="false" data-idx="${i}" data-q="${escHtml(item.listing_name)}">
@@ -208,15 +206,25 @@ function renderCard(offer) {
   </article>`;
 }
 
+const sortSelect = document.getElementById('search-sort-select');
+if (sortSelect) {
+  sortSelect.addEventListener('change', () => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('sort', sortSelect.value);
+    window.location.href = url.toString();
+  });
+}
+
 if (loadMoreBtn) {
   loadMoreBtn.addEventListener('click', async () => {
-    const { q, supermarket, offset } = loadMoreBtn.dataset;
+    const { q, supermarket, sort, offset } = loadMoreBtn.dataset;
     loadMoreBtn.disabled = true;
     loadMoreBtn.textContent = 'A carregar…';
 
     try {
       const params = new URLSearchParams({ q, limit: 24, offset });
       if (supermarket) params.set('supermarket', supermarket);
+      if (sort && sort !== 'relevance') params.set('sort', sort);
       const res = await fetch(`/api/search?${params}`);
       if (!res.ok) throw new Error();
       const { results, hasMore } = await res.json();
@@ -239,6 +247,16 @@ if (loadMoreBtn) {
       loadMoreBtn.innerHTML = '<span class="mdi">expand_more</span> Ver mais';
     }
   });
+}
+
+// ── Sticky bar shadow on scroll ──────────────────────────────────────────────
+
+const searchBarWrap = document.querySelector('.search-bar-wrap');
+if (searchBarWrap) {
+  const NAV_HEIGHT = 52;
+  window.addEventListener('scroll', () => {
+    searchBarWrap.classList.toggle('is-stuck', window.scrollY > NAV_HEIGHT);
+  }, { passive: true });
 }
 
 // Init

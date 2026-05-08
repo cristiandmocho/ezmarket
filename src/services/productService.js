@@ -21,14 +21,23 @@ export function buildSearchLike(q) {
   return { startLike: `${normalized}%`, containsLike: `%${normalized}%` };
 }
 
-export async function searchProducts({ q, supermarket = '', limit = 24, offset = 0 }) {
-  const key = cacheKey('search', q, supermarket, limit, offset);
+const SORT_CLAUSE = {
+  relevance:  '',
+  price_asc:  'ORDER BY price ASC',
+  price_desc: 'ORDER BY price DESC',
+  name_asc:   'ORDER BY listing_name ASC',
+  name_desc:  'ORDER BY listing_name DESC',
+};
+
+export async function searchProducts({ q, supermarket = '', sort = 'relevance', limit = 24, offset = 0 }) {
+  const key = cacheKey('search', q, supermarket, sort, limit, offset);
 
   if (cache.has(key))
     return cache.get(key);
 
   const { startLike, containsLike } = buildSearchLike(q);
   const supermarketClause = supermarket ? ' AND s.slug = ?' : '';
+  const orderBy = SORT_CLAUSE[sort] || '';
 
   const subParams = (like) => [like, like, like, ...(supermarket ? [supermarket] : []), limit + offset];
 
@@ -45,7 +54,7 @@ export async function searchProducts({ q, supermarket = '', limit = 24, offset =
     LIMIT ?`;
 
   const [rows] = await pool.query(
-    `(${sub}) UNION (${sub}) LIMIT ? OFFSET ?`,
+    `(${sub}) UNION (${sub}) ${orderBy} LIMIT ? OFFSET ?`,
     [...subParams(startLike), ...subParams(containsLike), limit, offset]
   );
 
